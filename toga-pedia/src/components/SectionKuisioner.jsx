@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 
-const SectionKuisioner = () => {
+const SectionKuisioner = ({ onAnswerChange }) => {
     const questions = [
     {
       id: 1,
@@ -46,22 +46,6 @@ const SectionKuisioner = () => {
     }
   ];
 
-  // 2. State & Logic
-  const [answers, setAnswers] = useState({});
-
-  const handleSelectChange = (questionId, value) => {
-    setAnswers(prev => ({
-      ...prev,
-      [questionId]: value
-    }));
-  };
-
-  const handleSubmit = () => {
-    // Nanti logika kirim ke backend/algoritma SAW ada di sini
-    console.log("Jawaban User:", answers);
-    alert("Cek console untuk melihat hasil jawaban");
-  };
-
   return (
     <section className="py-4 bg-white">
         <div className="md:max-w-10xl w-full md:mx-auto md:px-6">
@@ -92,13 +76,13 @@ const SectionKuisioner = () => {
                                     <input 
                                     type="text"
                                     placeholder={q.placeholder}
-                                    onChange={(e) => handleSelectChange(q.id, e.target.value)} 
+                                    onChange={(e) => onAnswerChange(q.id, e.target.value)} 
                                     className="w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 rounded-xl leading-tight focus:outline-none focus:border-[#357C23] transition"/>
                                 ) : (
                                 <>
                                 {/* Input Dropdown */}
                                 <select
-                                onChange={(e) => handleSelectChange(q.id, e.target.value)} 
+                                onChange={(e) => onAnswerChange(q.id, e.target.value)} 
                                 className="w-full appearance-none bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-xl leading-tight focus:outline-none focus:border-[#357C23] cursor-pointer transition"
                                 defaultValue=""
                                 >

@@ -1,18 +1,39 @@
 import React from 'react'
 import Navbar from '../components/Navbar'
 import TogaCard from '../components/TogaCard'
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const HasilSPK = () => {
-    const recommendations = [
-    { id: 1, name: "Jahe Merah", category: "Zingiber officinale", desc: "Sangat cocok dengan lahan sempit dan iklim panas.", image: "https://placehold.co/600x400/png" },
-    { id: 2, name: "Kunyit", category: "Curcuma longa", desc: "Perawatan mudah dan masa panen sesuai target Anda.", image: "https://placehold.co/600x400/png" },
-    { id: 3, name: "Lidah Buaya", category: "Aloe vera", desc: "Cocok untuk pemula dengan kebutuhan air minim.", image: "https://placehold.co/600x400/png" },
-  ];
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const otherRecommendations = [
-    { id: 4, name: "Kencur", category: "Kaempferia galanga", desc: "Alternatif baik untuk dataran rendah.", image: "https://placehold.co/600x400/png" },
-    { id: 5, name: "Sirih", category: "Piper betle", desc: "Membutuhkan rambatan namun khasiat tinggi.", image: "https://placehold.co/600x400/png" },
-  ];
+  // Mengambil Data dari RekomendasiSPK
+  const { result } = location.state || {};
+
+  // Jika tidak ada data, tampilkan pesan
+  if (!result) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+        <h2 className="text-2xl font-bold text-gray-700 mb-4">Data Tidak Ditemukan</h2>
+        <p className="text-gray-500 mb-6">Silakan isi kuesioner terlebih dahulu.</p>
+        <button 
+          onClick={() => navigate('/rekomendasi')}
+          className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700"
+        >
+          Ke Halaman Rekomendasi
+        </button>
+      </div>
+    );
+  }
+
+  // Olah Data Rekomendasi
+  const { match_info, data } = result;
+
+  // Rekomendasi Utama (3 Teratas)
+  const recommendations = data.slice(0, 3);
+
+  // Rekomendasi Lainnya
+  const otherRecommendations = data.slice(3);
 
   return (
     <div className="min-h-screen bg-[#FDFDFD]">
@@ -31,6 +52,8 @@ const HasilSPK = () => {
 
     {/* Hasil Rekomendasi Section */}
     <section className="max-w-10xl mx-auto px-6">
+        {/* Rekomendasi Utama */}
+        {recommendations.length > 0 ? (
         <div className="relative border border-[#557C2F] rounded-2xl p-6 md:px-10 md:py-14 bg-white shadow-sm">
           
           {/* Badge Hijau di Tengah Atas */}
@@ -39,25 +62,52 @@ const HasilSPK = () => {
               3 Rekomendasi Tanaman Terbaik
             </span>
           </div>
-
-            {/* Rekomendasi Utama */}
-            <div className="grid grid-cols-1 gap-6">
-                {recommendations.map((toga) => (
-                    <TogaCard key={toga.id} toga={toga} />
+          <div className="grid grid-cols-1 gap-6">
+                {recommendations.map((toga, index) => (
+                  <TogaCard 
+                    key={toga.id}
+                    id={toga.id} 
+                    nama={toga.nama}
+                    image={toga.image}
+                    kategori={toga.kategori || "Tanaman Obat"}
+                    deskripsi={toga.deskripsi}
+                  />
                 ))}
-            </div>
+          </div>
         </div>
+        ) : (
+          <p className="text-center text-gray-500">Tidak ada rekomendasi yang tersedia.</p>
+        )}
 
         {/* Rekomendasi Lainnya */}
+        {otherRecommendations.length > 0 && (
         <div className="mt-12">
             <h2 className="text-xl md:text-2xl font-lexend font-semibold text-gray-800 mb-6">
                 Rekomendasi Lainnya
             </h2>
             <div className="grid grid-cols-1 gap-6">
-                {otherRecommendations.map((toga) => (
-                    <TogaCard key={toga.id} toga={toga} />
+                {otherRecommendations.map((toga, index) => (
+                  <TogaCard 
+                    key={toga.id}
+                    id={toga.id}
+                    nama={toga.nama}
+                    image={toga.image}
+                    kategori={toga.kategori || "Tanaman Obat"}
+                    deskripsi={toga.deskripsi}
+                  />
                 ))}
             </div>
+        </div>
+        )}
+
+        {/* Tombol Ulang */}
+        <div className="text-center mt-16">
+          <button 
+            onClick={() => navigate('/rekomendasi')}
+            className="border-2 border-[#357C23] text-[#357C23] px-8 py-3 rounded-full hover:bg-[#357C23] hover:text-white transition font-semibold"
+          >
+            Analisis Ulang
+          </button>
         </div>
     </section>
     </div>

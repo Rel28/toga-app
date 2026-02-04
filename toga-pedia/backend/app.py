@@ -94,6 +94,23 @@ class ProcessingGuide(db.Model):
             'dosis': self.dosis_pemakaian
         }
 
+class Criteria(db.Model):
+    __tablename__ = 'criteria'
+    id = db.Column(db.Integer, primary_key=True)
+    kode = db.Column(db.String(5))
+    nama_kriteria = db.Column(db.String(50))
+    # ... atribut lain opsional jika tidak dipakai API
+
+class SubCriteria(db.Model):
+    __tablename__ = 'sub_criteria'
+    id = db.Column(db.Integer, primary_key=True)
+    criteria_id = db.Column(db.Integer, db.ForeignKey('criteria.id'))
+    label = db.Column(db.String(100))
+    nilai = db.Column(db.Integer)
+    
+    # Relasi untuk join
+    criteria = db.relationship('Criteria', backref='sub_criteria')
+
 # ==============================================================================
 # ALGORITMA SPK (SAW - Simple Additive Weighting)
 # ==============================================================================
@@ -171,6 +188,39 @@ def get_detail_tanaman(id):
     item = Alternative.query.get_or_404(id)
     
     response = item.to_dict()
+
+    # Pengambilan Panen Label
+    panen_label = f"{item.c1_panen} Bulan" if item.c1_panen else "-"
+
+    # Kriteria yang diambil dari SubCriteria
+    config_mapping = [
+        ('kesulitan', 'C3', item.c3_kesulitan),
+        ('lahan', 'C4', item.c4_lahan),
+        ('pengolahan', 'C5', item.c5_pengolahan),
+    ]
+
+    labels = {}
+
+    labels['panen'] = panen_label
+
+    # Loop mencari label sisa
+    for key, kode, val in config_mapping:
+        if val is None:
+            labels[key] = "-"
+            continue
+
+        sub = SubCriteria.query.join(Criteria).filter(
+            Criteria.kode == kode,
+            SubCriteria.nilai == val
+        ).first()
+
+        if sub:
+            labels[key] = sub.label
+        else:
+            labels[key] = f"Level {val}"
+    
+    response['labels'] = labels
+
     # Tambahkan data panduan (List of Objects)
     response['cara_menanam'] = [guide.to_dict() for guide in item.planting_guides]
     response['cara_mengolah'] = [guide.to_dict() for guide in item.processing_guides]
@@ -196,7 +246,9 @@ def get_rekomendasi():
     ]
     
     # 2. Ambil Data dari Database ke Pandas
-    query = "SELECT * FROM alternatives"
+    query = """SELECT a.*, c.nama_kategori 
+    FROM alternatives a
+    LEFT JOIN categories c ON a.category_id = c.id"""
     df = pd.read_sql(query, db.engine)
     
     # 3. LOGIKA HYBRID: Content-Based Filtering Dulu
@@ -236,6 +288,8 @@ def get_rekomendasi():
             hasil.append({
                 'id': int(row['id']),
                 'nama': row['nama_tanaman'],
+                'image': None,
+                'kategori': row['nama_kategori'] if pd.notnull(row['nama_kategori']) else "Umum",
                 'skor': round(float(row['skor']) * 100, 2), # Persentase
                 'harga_asli': float(row['harga_asli']),
                 'deskripsi': row['deskripsi_pendek'],

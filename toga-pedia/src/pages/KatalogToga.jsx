@@ -136,6 +136,7 @@ const KatalogToga = () => {
             {currentData.map((item) => (
               <TogaCard 
                 key={item.id}
+                id={item.id}
                 nama={item.nama}
                 image={item.image} // Placeholder gambar jika belum ada
                 kategori={item.kategori}
