@@ -51,7 +51,7 @@ const HasilSPK = () => {
     </section>
 
     {/* Hasil Rekomendasi Section */}
-    <section className="max-w-10xl mx-auto px-6">
+    <section className="max-w-10xl mx-auto px-6 pb-14">
         {/* Rekomendasi Utama */}
         {recommendations.length > 0 ? (
         <div className="relative border border-[#557C2F] rounded-2xl p-6 md:px-10 md:py-14 bg-white shadow-sm">
