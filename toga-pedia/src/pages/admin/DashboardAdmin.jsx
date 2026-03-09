@@ -133,7 +133,7 @@ const DashboardAdmin = () => {
                 <div className="bg-white rounded-2xl border-2 border-gray-200 overflow-hidden">
                     <table className="w-full">
                         <thead>
-                            <tr className="border-b-2 border-gray-200">
+                            <tr className="border-b-2 border-gray-200 bg-gray-200">
                                 <th className="font-lexend text-sm font-normal text-[#2C2C2C] py-4 text-center">Ranking</th>
                                 <th className="font-lexend text-sm font-normal text-[#2C2C2C] py-4 text-center">Nama Tanaman</th>
                                 <th className="font-lexend text-sm font-normal text-[#2C2C2C] py-4 text-center">Total Kemenangan</th>

@@ -19,7 +19,7 @@ const TogaCard = ({ id, nama, image, kategori, deskripsi}) => {
                   {/* Tombol Telusuri TOGA */}
                   <button 
                   onClick={() => navigate(`/katalog-toga/${id}`)}
-                  className="flex items-center gap-2 bg-[#357C23] text-white px-6 md:px-8 py-2 mt-10 md:py-2.5 rounded-full text-base md:text-base font-semibold hover:bg-[#2a5d1a] transition cursor-pointer w-full md:w-auto justify-center">
+                  className="flex items-center gap-2 bg-[#357C23] text-white px-6 md:px-8 py-2 mt-10 md:py-2.5 rounded-xl text-base md:text-base font-semibold hover:bg-[#2a5d1a] transition cursor-pointer w-full md:w-auto justify-center">
                   Telusuri 
                   {/* Ikon Panah Kecil */}
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3 h-3">

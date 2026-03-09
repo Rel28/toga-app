@@ -1,186 +1,324 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion'
-import Navbar from '../components/Navbar'
-import togaImage from '../assets/images/toga-image.jpg'
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import Navbar from "../components/Navbar";
+import togaImage from "../assets/images/toga-image.jpg";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
+import Footer from "../components/Footer";
 
 const Home = () => {
-    // 1. Placeholder Data
-    const [trendingToga, setTrendingToga] = useState([
-        {
-        id: 1,
-        name: "Jahe Merah",
-        category: "Rimpang",
-        desc: "Efektif untuk menghangatkan tubuh dan meningkatkan imunitas alami.",
-        image: "https://placehold.co/600x400/png"
-        },
-        {
-        id: 2,
-        name: "Lidah Buaya",
-        category: "Daun",
-        desc: "Dikenal luas untuk perawatan kulit, rambut, dan meredakan panas dalam.",
-        image: "https://placehold.co/600x400/png"
-        },
-        {
-        id: 3,
-        name: "Kumis Kucing",
-        category: "Bunga & Daun",
-        desc: "Sering digunakan untuk membantu mengobati infeksi saluran kencing.",
-        image: "https://placehold.co/600x400/png"
-        }
-    ]);
+  // 1. Placeholder Data
+  const navigate = useNavigate();
+  const [togaData, setTogaData] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1:5000/api/tanaman")
+      .then((res) => setTogaData(res.data.slice(0, 3)))
+      .catch((err) => console.error(err));
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#FDFDFD]">
-        {/* Navbar */}
-        <Navbar />
+      {/* Navbar */}
+      <Navbar />
 
-        {/* Section Utama */}
-        <motion.section 
+      {/* Section Utama */}
+      <motion.section
         className="min-h-screen max-w-screen mx-auto px-6 md:px-16 py-25 md:py-20 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center"
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
         viewport={{ once: false, amount: 0.2 }}
-        >
-            {/* Teks Kiri */}
-            <div className="space-y-4 md:space-y-6"
-            >
-                <h1 className="text-[20px] md:text-[40px] font-lexend font-bold text-gray-800 leading-tight w-full">
-                    Temukan Tanaman Obat (TOGA) <br /> <span className="text-[#357C23] text-[18px] md:text-[35px]">yang Paling Sesuai Untuk Anda</span>
-                </h1>
+      >
+        {/* Teks Kiri */}
+        <div className="space-y-4 md:space-y-6">
+          <h1 className="text-[20px] md:text-[32px] font-lexend font-bold text-gray-800 leading-tight w-full">
+            Temukan Tanaman Obat (TOGA) <br />{" "}
+            <span className="text-[#357C23] text-[18px] md:text-[28px]">
+              yang Paling Sesuai Untuk Anda
+            </span>
+          </h1>
 
-                <p className="text-gray-600 text-[16px] md:text-[20px] leading-relaxed max-w-200">
-                Sistem ini membantu Anda memilih TOGA terbaik di Indonesia. 
-                Rekomendasi didasarkan pada 6 kriteria seperti masa panen, 
-                biaya perawatan, dan harga jual.
-                </p>
+          <p className="text-gray-600 text-[16px] md:text-[18px] leading-relaxed max-w-200">
+            Sistem ini membantu Anda memilih TOGA terbaik di Indonesia.
+            Rekomendasi didasarkan pada 6 kriteria seperti masa panen, jumlah
+            kegunaan tanaman, harga jual, dll.
+          </p>
 
-                <button className="mt-4 bg-[#357C23] text-white px-8 py-4 font-lexend rounded-full font-medium text-lg md:text-xl hover:bg-[#446325] transition shadow-lg cursor-pointer">
-                Mulai Rekomendasi
-                </button>
-            </div>
-
-            {/* Gambar Kanan */}
-            <img 
-                src={togaImage} 
-                alt="Gambar Toga" 
-                className="w-full h-auto border border-gray-200 rounded-2xl flex mx-auto shadow-sm relative overflow-hidden order-first md:order-0"
-            />
-        </motion.section>
-        
-        {/* Section Rekomendasi */}
-        <div className="min-h-screen bg-[#F5F5F5] py-16 md:py-20">
-        <motion.section 
-        className="flex items-center"
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        viewport={{ once: false, amount: 0.2 }}
-        >
-            <div className="max-w-screen mx-auto px-6 md:px-16 w-full">
-            
-                {/* Judul */}
-                <div className="text-center">
-                    <h2 className="text-[30px] md:text-[50px] font-lexend font-medium text-black">
-                        Jalur <span className="text-[#557C2F]">Rekomendasi</span>
-                    </h2>
-                </div>
-
-                {/* Grid Konten */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mt-12 md:mt-16">
-                    {/* Konten 1: Rekomendasi Cepat */}
-                    <div className="flex items-start">
-                        <div className="hidden md:block w-3 h-18 bg-[#357C23] rounded-l-[10px] mt-6
-                         shrink-0"></div>
-                        <div className="bg-white rounded-3xl p-4 md:p-6 shadow-sm">
-                                <div className="flex items-center gap-3 justify-center md:justify-start">
-                                <h3 className="text-[25px] md:text-[30px] font-lexend font-medium text-[#357C23] md:mx-4 mt-2">Rekomendasi Cepat</h3>
-                                </div>
-
-                                <div className="flex md:flex-row flex-col items-start md:gap-14 gap-4 mt-6 mb-6 mx-4">
-                                    <p className="text-gray-600 text-[14px] md:text-[18px] leading-relaxed text-justify">
-                                    Telusuri kelompok tanaman yang sudah dikategorikan secara otomatis oleh sistem. Cocok jika Anda ingin melihat gambaran besar atau belum yakin kriteria apa yang penting bagi Anda. (Misalnya: "Kelompok Tanaman Bernilai Jual Tinggi" atau "Kelompok Tanaman Perawatan Murah").
-                                    </p>
-                                    <img src={togaImage} alt="" className="w-44 h-34 rounded-lg mx-auto md:mx-0 order-first md:order-0" />
-                                </div>
-                        </div>   
-                    </div>
-
-                    {/* Konten 2: Rekomendasi Spesifik */}
-                    <div className="flex items-start">
-                        <div className="hidden md:block w-3 h-18 bg-[#357C23] rounded-l-[10px] mt-6
-                         shrink-0"></div>
-                        <div className="bg-white rounded-3xl p-4 md:p-6 shadow-sm">
-                                <div className="flex items-center gap-3 justify-center md:justify-start">
-                                <h3 className="text-[25px] md:text-[30px] font-lexend font-medium text-[#357C23] md:mx-4 mt-2">Rekomendasi Spesifik</h3>
-                                </div>
-
-                                <div className="flex md:flex-row flex-col items-start md:gap-14 gap-4 mt-6 mb-6 mx-4">
-                                    <p className="text-gray-600 text-[14px] md:text-[18px] leading-relaxed text-justify">
-                                    Tentukan sendiri tingkat kepentingan (bobot) untuk setiap kriteria. Sistem akan menghitung rekomendasi paling akurat untuk Anda menggunakan metode SAW dan TOPSIS. Anda dapat mengatur prioritas untuk 6 kriteria seperti Masa Panen, Biaya Perawatan, dan Harga Jual.
-                                    </p>
-                                    <img src={togaImage} alt="" className="w-44 h-34 rounded-lg mx-auto md:mx-0 order-first md:order-0" />
-                                </div>
-                        </div>   
-                    </div>
-                </div>
-            </div>
-        </motion.section>
+          <button
+            className="mt-4 bg-[#357C23] text-white px-8 py-4 font-lexend rounded-xl font-medium text-lg hover:bg-[#2a5d1a] transition shadow-lg cursor-pointer"
+            onClick={() => navigate("/rekomendasi")}
+          >
+            Mulai Rekomendasi
+          </button>
         </div>
 
-        {/* Section Item */}
-        <motion.section 
-        className="min-h-screen py-16 md:py-20"
+        {/* Gambar Kanan */}
+        <img
+          src={togaImage}
+          alt="Gambar Toga"
+          className="w-full max-w-160 h-auto border border-gray-200 rounded-2xl flex mx-auto shadow-sm relative overflow-hidden order-first md:order-0"
+        />
+      </motion.section>
+
+      {/* Section Rekomendasi */}
+      <div className="min-h-screen bg-[#F5F5F5] md:py-15">
+        {/* Section Rekomendasi */}
+        <motion.section
+          className=" bg-[#F5F5F5] max-w-screen mx-auto px-6 md:px-16 py-25 md:py-20 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          viewport={{ once: false, amount: 0.2 }}
+        >
+          {/* Gambar Kiri */}
+          <img
+            src={togaImage}
+            alt="Rekomendasi TOGA"
+            className="w-full max-w-160 h-auto border border-gray-200 rounded-2xl flex mx-auto shadow-sm relative overflow-hidden order-first md:order-0"
+          />
+
+          {/* Teks Kanan */}
+          <div className="space-y-4 md:space-y-6">
+            <h2 className="text-[20px] md:text-[32px] font-lexend font-bold text-gray-800 leading-tight w-full">
+              Bagaimana Sistem Memilih Tanaman untuk Anda
+            </h2>
+            <div className="space-y-2">
+              <p className="text-gray-600 text-[16px] md:text-[18px] leading-relaxed max-w-200">
+                Sistem ini bertindak layaknya asisten kebun cerdas Anda.
+                Alih-alih menebak, kami mencocokkan kondisi Anda dengan banyak jenis tanaman herbal melalui:
+              </p>
+              <ul className="list-disc list-outside text-gray-600 text-[16px] md:text-[18px] leading-relaxed max-w-200 pl-5">
+                <li>
+                  <strong>Kenali Kebutuhan:</strong> Anda tentukan prioritas
+                  utama Anda (misal: hanya punya pot kecil, ingin cepat panen,
+                  atau mencari tanaman bernilai jual tinggi).
+                </li>
+                <li>
+                  <strong>Analisis Pintar:</strong> Sistem secara otomatis akan
+                  membandingkan semua tanaman berdasarkan 6 faktor kunci
+                  (kemudahan tanam, waktu panen, lahan, pengolahan, khasiat, dan
+                  nilai ekonomi).
+                </li>
+              </ul>
+            </div>
+          </div>
+        </motion.section>
+      </div>
+
+      {/* Section Item */}
+      <motion.section
+        className="py-16 md:py-20"
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
         viewport={{ once: false, amount: 0.2 }}
+      >
+        <div className="max-w-screen mx-auto px-6 md:px-16 w-full">
+          {/* Judul */}
+          <div className="text-center mb-10 md:mb-14">
+            <h2 className="text-[22px] md:text-[34px] font-lexend font-medium text-black">
+              Telusuri <span className="text-[#357C23]">TOGA</span>
+            </h2>
+          </div>
+
+          {/* Grid Item */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            {togaData.map((toga) => (
+              <div
+                key={toga.id}
+                className="border border-gray-200 rounded-xl p-4 shadow-sm transition duration-300 bg-white hover:border-[#357C23]"
+              >
+                {/* Gambar */}
+                <img
+                  src={toga.image}
+                  alt={toga.nama}
+                  className="w-full h-48 object-cover rounded-lg mb-3"
+                />
+
+                {/* Nama Toga */}
+                <div className="mb-4">
+                  <h3 className="text-[16px] md:text-[18px] font-lexend font-semibold text-gray-800">
+                    {toga.nama}
+                  </h3>
+                  <p className="text-gray-500 text-[13px] md:text-[15px] font-lexend">
+                    {toga.kategori}
+                  </p>
+                  <p className="text-gray-500 text-[13px] md:text-[14px] mt-2 line-clamp-2">
+                    {toga.deskripsi}
+                  </p>
+                </div>
+
+                {/* Tombol Detail */}
+                <button
+                  onClick={() => navigate(`/katalog-toga/${toga.id}`)}
+                  className="flex items-center gap-2 bg-[#357C23] text-white px-5 py-2 rounded-xl text-sm font-semibold hover:bg-[#2a5d1a] transition cursor-pointer w-full justify-center"
+                >
+                  Telusuri
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="currentColor"
+                    className="w-3 h-3"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25"
+                    />
+                  </svg>
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 md:mt-12 flex justify-center">
+            <button
+              onClick={() => navigate("/katalog-toga")}
+              className="bg-[#357C23] text-white px-8 py-3 rounded-xl font-medium text-base md:text-md hover:bg-[#446325] transition shadow-md cursor-pointer w-full md:w-auto"
+            >
+              Lihat Semua
+            </button>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* Section Referensi */}
+      <div className="min-h-screen bg-[#F5F5F5] ">
+        {/* Section Referensi */}
+        <motion.section
+          className="py-16 md:py-20"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          viewport={{ once: false, amount: 0.2 }}
         >
-            <div className="max-w-screen mx-auto px-6 md:px-16 w-full">
-
-                {/* Judul */}
-                <div className="text-center">
-                    <h2 className="text-[30px] md:text-[50px] font-lexend font-medium text-black">
-                        Telusuri <span className="text-[#357C23]">TOGA</span>
-                    </h2>
-                </div>
-
-                {/* Grid Item */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mt-12 md:mt-24">
-                    {trendingToga.map((toga) => (
-                        <div key={toga.id} className="border border-gray-200 rounded-lg p-6 md:p-10 shadow-sm transition duration-300 bg-white">
-                            {/* Gambar */}
-                            <img src={toga.image} alt={toga.name} className="w-full h-80 object-cover rounded-md mb-4" />
-
-                            {/* Nama Toga */}
-                            <div className="mb-6">
-                                <h3 className="text-[20px] md:text-[25px] font-lexend font-semibold text-gray-800">{toga.name}</h3>
-                                <p className="text-gray-500 text-[16px] md:text-[20px] font-lexend font-normal">{toga.category}</p>
-                                <p className="text-gray-500 md:text-[18px] text-[15px] mt-5">{toga.desc}</p>
-                            </div>
-
-                            {/* Tombol Detail */}
-                            <button className="flex items-center gap-2 bg-[#357C23] text-white px-6 md:px-8 py-2.5 md:py-3 rounded-full text-base md:text-lg font-semibold hover:bg-[#2a5d1a] transition cursor-pointer w-full md:w-auto justify-center">
-                            Telusuri 
-                            {/* Ikon Panah Kecil */}
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3 h-3">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
-                            </svg>
-                            </button>                           
-                        </div>
-                    ))}
-
-                    {/* Tombol Lihat Semua */}
-                </div>
-                <div className="mt-12 md:mt-18 flex justify-center">
-                        <button className="bg-[#357C23] text-white px-8 py-4 rounded-full font-medium text-lg md:text-xl hover:bg-[#446325] transition shadow-md cursor-pointer w-full md:w-auto">
-                        Lihat Semua
-                        </button>
-                    </div>
+          <div className="max-w-screen mx-auto px-6 md:px-16">
+            {/* Judul */}
+            <div className="text-center mb-10 md:mb-14">
+              <h2 className="text-[22px] md:text-[34px] font-lexend font-medium text-black">
+                Sumber <span className="text-[#357C23]">Referensi</span>
+              </h2>
+              <p className="text-gray-500 text-sm md:text-base mt-2">
+                Data dan informasi tanaman bersumber dari literatur ilmiah
+                terpercaya.
+              </p>
             </div>
-        </motion.section>
-    </div>
-  )
-}
 
-export default Home
+            {/* Grid Buku */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+              {[
+                {
+                  judul: "VADEMEKUM TANAMAN OBAT Jilid 1",
+                  penulis: "Kementerian Kesehatan RI",
+                  penerbit: "Lembaga Penerbit Badan Litbangkes · Jakarta",
+                  tahun: "2012",
+                  tipe: "buku",
+                },
+                {
+                  judul: "VADEMEKUM TANAMAN OBAT Jilid 2",
+                  penulis: "Kementerian Kesehatan RI",
+                  penerbit: "Lembaga Penerbit Badan Litbangkes · Jakarta",
+                  tahun: "2012",
+                  tipe: "buku",
+                },
+                {
+                  judul: "VADEMEKUM TANAMAN OBAT Jilid 3",
+                  penulis: "Kementerian Kesehatan RI",
+                  penerbit: "Lembaga Penerbit Badan Litbangkes · Jakarta",
+                  tahun: "2012",
+                  tipe: "buku",
+                },
+                {
+                  judul: "Alodokter",
+                  penulis: "Tim Medis Alodokter",
+                  penerbit: "alodokter.com · Online",
+                  tahun: "2024",
+                  tipe: "web",
+                  url: "https://www.alodokter.com",
+                },
+              ].map((ref, i) => (
+                <div
+                  key={i}
+                  className="flex bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200 hover:border-[#357C23] hover:shadow-md transition duration-300"
+                >
+                  {/* Punggung — biru untuk web, hijau untuk buku */}
+                  <div
+                    className={`w-3 shrink-0 ${ref.tipe === "web" ? "bg-blue-500" : "bg-[#357C23]"}`}
+                  />
+
+                  <div className="flex items-start gap-4 p-4 md:p-5 w-full">
+                    {/* Ikon */}
+                    <div
+                      className={`shrink-0 w-10 h-10 rounded-lg flex items-center justify-center mt-0.5 ${ref.tipe === "web" ? "bg-blue-50" : "bg-green-100"}`}
+                    >
+                      {ref.tipe === "web" ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="#3b82f6"
+                          className="w-5 h-5"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253"
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="#357C23"
+                          className="w-5 h-5"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"
+                          />
+                        </svg>
+                      )}
+                    </div>
+
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <p className="font-lexend font-semibold text-gray-800 text-sm md:text-base leading-snug">
+                        {ref.judul}
+                      </p>
+                      <p
+                        className={`text-xs font-medium mt-0.5 ${ref.tipe === "web" ? "text-blue-500" : "text-[#357C23]"}`}
+                      >
+                        {ref.penulis}
+                      </p>
+                      <p className="text-gray-400 text-xs mt-1">
+                        {ref.penerbit} · {ref.tahun}
+                      </p>
+                    </div>
+
+                    {/* Badge tipe */}
+                    <span
+                      className={`shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded-full self-start ${ref.tipe === "web" ? "bg-blue-50 text-blue-400" : "bg-green-50 text-[#357C23]"}`}
+                    >
+                      {ref.tipe === "web" ? "Web" : "Buku"}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.section>
+        <Footer />
+      </div>
+    </div>
+  );
+};
+
+export default Home;

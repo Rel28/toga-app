@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
 import Navbar from '../components/Navbar'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import axios from 'axios';
 import SectionKuisioner from '../components/SectionKuisioner';
+import HasilTop3 from '../components/HasilTop3';
 
 const RekomendasiSPK = () => {
   const navigate = useNavigate();
 
   // State Menyimpan Jawaban Kuisioner
   const [answers, setAnswers] = useState({});
+  const location = useLocation();
+  const [result, setResult] = useState(location.state?.result || null); 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   // Update Jawaban dari Komponen Anak
   const handleAnswerChange = (id, value) => {
@@ -21,14 +26,17 @@ const RekomendasiSPK = () => {
   // Pengiriman ke Backend
   const handleCariRekomendasi = async () => {
     const payload = generatePayload();
+    setLoading(true);
+    setError(null);
     
     try {
       const response = await axios.post('http://127.0.0.1:5000/api/rekomendasi', payload);
-
-      navigate('/hasil-spk', { state: { result: response.data }});
+      setResult(response.data);
     } catch (error) {
       console.error("Error SPK:", error);
       alert("Terjadi kesalahan saat mencari rekomendasi.");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -88,12 +96,20 @@ const RekomendasiSPK = () => {
     };
   };
 
+  const top3 = result?.data?.slice(0, 3) || [];
+
+  const rankStyle = [
+    'bg-yellow-400 text-yellow-900',
+    'bg-gray-300 text-gray-700',
+    'bg-amber-600 text-white',
+  ];
+
   return (
     <div className="min-h-screen bg-[#FDFDFD]">
         <Navbar />
 
     {/* Title Section */}
-      <section className="pt-38 md:pb-12 pb-4 px-6 md:px-16">
+      <section className="pt-28 md:pt-38 md:pb-12 pb-8 px-6 md:px-16">
         <div className="max-w-screen mx-auto text-center">
           <h1 className="text-2xl md:text-5xl font-lexend font-normal text-black">
             Rekomendasi <span className="text-[#357C23]">Spesifik</span>
@@ -105,19 +121,43 @@ const RekomendasiSPK = () => {
       </section>
 
       {/* Questionaire Section */}
-      <section className="py-4">
-        <SectionKuisioner 
-        onAnswerChange={handleAnswerChange}
-        />
+      <section className="px-6 md:px-16 pb-20">
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
 
-        {/* Tombol Submit Jawaban */}
-        <div className="mt-12 flex justify-center">
-                <button
-                    onClick={handleCariRekomendasi}
-                    className="bg-[#357C23] text-white px-8 py-3 rounded-full font-semibold text-lg hover:bg-[#2a5d1a] transition shadow-lg flex items-center gap-2 cursor-pointer font-lexend"
-                >
+          {/* Kiri: Kuisioner */}
+          <div className="w-full lg:w-1/2">
+            <SectionKuisioner onAnswerChange={handleAnswerChange} />
+
+            <div className="mt-8 flex justify-center">
+              <button
+                onClick={handleCariRekomendasi}
+                disabled={loading}
+                className="bg-[#357C23] text-white px-8 py-3 rounded-xl font-semibold text-lg hover:bg-[#2a5d1a] transition shadow-lg flex items-center gap-2 cursor-pointer font-lexend disabled:opacity-60"
+              >
+                {loading ? (
+                  <>
+                    <svg className="animate-spin w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                    </svg>
+                    Mencari...
+                  </>
+                ) : (
+                  <>
                     Cari Rekomendasi
-                </button>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
+                    </svg>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Kanan: Hasil */}
+          <div className="w-full lg:w-1/2 lg:sticky lg:top-24">
+            <HasilTop3 result={result} loading={loading} error={error} />
+          </div>
         </div>
       </section>
     </div>

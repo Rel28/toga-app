@@ -1,13 +1,19 @@
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from routes.crud_kategori import kategori_bp, init_kategori_routes
+from routes.crud_tanaman import tanaman_bp, init_tanaman_routes
+from routes.crud_subkriteria import subkriteria_bp,init_subkriteria_routes
+from routes.crud_penanaman import penanaman_bp, init_penanaman_routes
+from routes.crud_pengolahan import pengolahan_bp, init_pengolahan_routes
+from routes.crud_kriteria import kriteria_bp, init_kriteria_routes
 import pandas as pd
 import numpy as np
 
 app = Flask(__name__)
 CORS(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:theepic28@localhost/toga_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:theepic28@localhost/toga_db_2'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -21,15 +27,25 @@ class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nama_kategori = db.Column(db.String(50))
     deskripsi = db.Column(db.Text)
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'nama_kategori': self.nama_kategori,
+            'deskripsi': self.deskripsi
+        }
 
 class Alternative(db.Model):
     __tablename__ = 'alternatives'
     id = db.Column(db.Integer, primary_key=True)
     category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
     nama_tanaman = db.Column(db.String(100))
-    deskripsi_pendek = db.Column(db.String(255))
+    deskripsi_pendek = db.Column(db.Text)
     detail_kegunaan = db.Column(db.Text)
-    harga_asli = db.Column(db.Numeric(15,2))
+    
+    harga_bibit = db.Column(db.String(50))
+    harga_hasil_panen = db.Column(db.String(50))
+    masa_panen = db.Column(db.String(50))
+    image_url = db.Column(db.String(255))
     
     # Nilai Kriteria
     c1_panen = db.Column(db.Integer)
@@ -48,11 +64,13 @@ class Alternative(db.Model):
         return {
             'id': self.id,
             'nama': self.nama_tanaman,
-            'image': None,
             'kategori': self.category.nama_kategori if self.category else "Umum",
             'deskripsi': self.deskripsi_pendek,
-            'kegunaan': self.detail_kegunaan,
-            'harga': float(self.harga_asli) if self.harga_asli else 0,
+            'kegunaan': self.detail_kegunaan.split(';') if self.detail_kegunaan else [],
+            'harga_bibit': self.harga_bibit,
+            'harga_panen': self.harga_hasil_panen,
+            'masa_panen': self.masa_panen,
+            'image': self.image_url,
             # Data Kriteria (Opsional dikirim ke frontend)
             'scores': {
                 'panen': self.c1_panen,
@@ -70,13 +88,14 @@ class PlantingGuide(db.Model):
     alternative_id = db.Column(db.Integer, db.ForeignKey('alternatives.id'))
     metode = db.Column(db.String(100))
     langkah_langkah = db.Column(db.Text)
-    estimasi_hari = db.Column(db.Integer)
 
     def to_dict(self):
         return {
-            'metode': self.metode,
+            'id': self.id,
+            'alternative_id': self.alternative_id,
+            'nama_tanaman': self.alternative.nama_tanaman if self.alternative else None,
+            'metode': self.metode if self.metode else '',
             'langkah': self.langkah_langkah.split(';') if self.langkah_langkah else [],
-            'estimasi': self.estimasi_hari
         }
 
 class ProcessingGuide(db.Model):
@@ -84,14 +103,19 @@ class ProcessingGuide(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     alternative_id = db.Column(db.Integer, db.ForeignKey('alternatives.id'))
     nama_olahan = db.Column(db.String(100))
+    kegunaan_olahan = db.Column(db.Text)
     langkah_langkah = db.Column(db.Text)
     dosis_pemakaian = db.Column(db.String(100))
 
     def to_dict(self):
         return {
-            'olahan': self.nama_olahan,
+            'id': self.id,
+            'alternative_id': self.alternative_id,
+            'nama_tanaman': self.alternative.nama_tanaman if self.alternative else None,
+            'olahan': self.nama_olahan if self.nama_olahan else '',
+            'kegunaan_olahan': self.kegunaan_olahan if self.kegunaan_olahan else '',
             'langkah': self.langkah_langkah.split(';') if self.langkah_langkah else [],
-            'dosis': self.dosis_pemakaian
+            'dosis': self.dosis_pemakaian if self.dosis_pemakaian else ''
         }
 
 class Criteria(db.Model):
@@ -99,7 +123,17 @@ class Criteria(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     kode = db.Column(db.String(5))
     nama_kriteria = db.Column(db.String(50))
-    # ... atribut lain opsional jika tidak dipakai API
+    atribut = db.Column(db.String(10)) # 'cost' atau 'benefit'
+    bobot_default = db.Column(db.Float)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'kode': self.kode,
+            'nama_kriteria': self.nama_kriteria,
+            'atribut': self.atribut,
+            'bobot': self.bobot_default
+        }
 
 class SubCriteria(db.Model):
     __tablename__ = 'sub_criteria'
@@ -107,9 +141,16 @@ class SubCriteria(db.Model):
     criteria_id = db.Column(db.Integer, db.ForeignKey('criteria.id'))
     label = db.Column(db.String(100))
     nilai = db.Column(db.Integer)
-    
     # Relasi untuk join
     criteria = db.relationship('Criteria', backref='sub_criteria')
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'label': self.label,
+            'nilai': self.nilai,
+            'kode': self.criteria.kode if self.criteria else None,
+        }
 
 # ==============================================================================
 # ALGORITMA HYBRID: SAW + TOPSIS
@@ -179,7 +220,6 @@ def hitung_spk(df, weights):
 
     return V
 
-
 # ==============================================================================
 # ROUTE API
 # ==============================================================================
@@ -187,7 +227,7 @@ def hitung_spk(df, weights):
 @app.route('/api/tanaman', methods=['GET'])
 def get_all_tanaman():
     # Ambil semua data (JOIN otomatis via SQLAlchemy)
-    data = Alternative.query.all()
+    data = Alternative.query.order_by(Alternative.id).all()
     return jsonify([item.to_dict() for item in data])
 
 @app.route('/api/tanaman/<int:id>', methods=['GET'])
@@ -288,17 +328,16 @@ def get_rekomendasi():
         # Format JSON untuk Frontend
         hasil = []
         for _, row in top_results.iterrows():
-            # Cari nama kategori manual (karena Pandas read_sql cuma bawa ID)
-            # Opsional: Bisa join SQL di awal, tapi biar simpel kita query nama kategori belakangan atau biarkan ID
-            # Agar cepat, kita biarkan di frontend yang mapping, atau query lagi
             
             hasil.append({
                 'id': int(row['id']),
                 'nama': row['nama_tanaman'],
-                'image': None,
+                'image': row['image_url'] if pd.notnull(row['image_url']) else None,
                 'kategori': row['nama_kategori'] if pd.notnull(row['nama_kategori']) else "Umum",
                 'skor': round(float(row['skor']) * 100, 2), # Persentase
-                'harga_asli': float(row['harga_asli']),
+                'harga_bibit': row['harga_bibit'] if pd.notnull(row['harga_bibit']) else '-',
+                'harga_hasil_panen': row['harga_hasil_panen'] if pd.notnull(row['harga_hasil_panen']) else '-',
+                'masa_panen': row['masa_panen'] if pd.notnull(row['masa_panen']) else '-',
                 'deskripsi': row['deskripsi_pendek'],
                 'match_info': match_status
             })
@@ -310,6 +349,20 @@ def get_rekomendasi():
         })
     else:
         return jsonify({'status': 'empty', 'data': []})
+
+init_kategori_routes(db, Category)
+init_tanaman_routes(db, Category, Alternative)
+init_subkriteria_routes(db, Criteria, SubCriteria)
+init_penanaman_routes(db, PlantingGuide, Alternative)
+init_pengolahan_routes(db, ProcessingGuide, Alternative)
+init_kriteria_routes(db, Criteria)
+
+app.register_blueprint(kategori_bp)
+app.register_blueprint(tanaman_bp)
+app.register_blueprint(subkriteria_bp)
+app.register_blueprint(penanaman_bp)
+app.register_blueprint(pengolahan_bp)
+app.register_blueprint(kriteria_bp)
 
 if __name__ == '__main__':
     with app.app_context():
