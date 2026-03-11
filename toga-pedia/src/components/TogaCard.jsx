@@ -1,7 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
 
-const TogaCard = ({ id, nama, image, kategori, deskripsi}) => {
+const TogaCard = ({ id, nama, image, kategori, deskripsi }) => {
 
   const navigate = useNavigate();
 

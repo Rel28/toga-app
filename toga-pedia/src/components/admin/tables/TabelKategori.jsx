@@ -127,12 +127,9 @@ const TabelKategori = () => {
         <div className="flex gap-2">
           <button
             onClick={openModal}
-            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors duration-300 cursor-pointer"
+            className="px-4 py-2 bg-[#357C23] text-white rounded hover:bg-[#2a5d1a] transition-colors duration-300 cursor-pointer"
           >
             <span className="font-semibold">+</span> Tambah Data
-          </button>
-          <button className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors duration-300 cursor-pointer">
-            Hapus Semua
           </button>
         </div>
       </div>
@@ -189,7 +186,7 @@ const TabelKategori = () => {
               </h3>
               <button
                 onClick={closeModal}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-gray-600 cursor-pointer"
               >
                 <svg
                   className="w-6 h-6"
@@ -242,15 +239,15 @@ const TabelKategori = () => {
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-300"
+                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-300 cursor-pointer"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-300"
+                  className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-300 cursor-pointer"
                 >
-                  {isEditMode ? "Update Data" : "Simpan Data"}
+                  Simpan Data
                 </button>
               </div>
             </form>

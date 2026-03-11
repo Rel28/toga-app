@@ -50,7 +50,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       <button
         onClick={() => goToPage(currentPage - 1)}
         disabled={currentPage === 1}
-        className={`px-3 py-2 md:px-4 md:py-2 rounded-md font-medium text-sm md:text-base transition ${
+        className={`px-3 py-2 md:px-4 md:py-2 rounded-md font-medium text-sm md:text-base transition cursor-pointer ${
           currentPage === 1
             ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
             : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -73,7 +73,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
           <button
             key={page}
             onClick={() => goToPage(page)}
-            className={`px-3 py-2 md:px-4 md:py-2 rounded-md font-medium text-sm md:text-base transition ${
+            className={`px-3 py-2 md:px-4 md:py-2 rounded-md font-medium text-sm md:text-base transition cursor-pointer ${
               currentPage === page
                 ? 'bg-[#357C23] text-white'
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -88,7 +88,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       <button
         onClick={() => goToPage(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className={`px-3 py-2 md:px-4 md:py-2 rounded-md font-medium transition ${
+        className={`px-3 py-2 md:px-4 md:py-2 rounded-md font-medium transition cursor-pointer ${
           currentPage === totalPages
             ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
             : 'bg-gray-200 text-gray-700 hover:bg-gray-300'

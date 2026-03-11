@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import Chatbot from "./ChatBot";
+import chatIcon from "../assets/images/chat_bubble.svg";
+import logo from "../assets/images/toga_logo.svg";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
@@ -16,26 +20,21 @@ const Navbar = () => {
     return to === "/" ? pathname === "/" : pathname.startsWith(to);
   };
 
-  const activeClass =
-    "text-[#357C23] font-semibold border-b-2 border-[#557C2F]";
-  const defaultClass = "text-gray-500 hover:text-[#357C23] transition";
-
   return (
     <>
       <nav className="fixed top-0 w-full z-50 flex items-center justify-between px-8 py-4 shadow-sm bg-white">
         {/* Bagian Logo */}
         <div className="flex items-center gap-1">
           <div className="relative w-12 h-12">
-            <div className="absolute top-0 left-0 w-8 h-8 rounded-full bg-gray-300 border border-black/50"></div>
-            <div className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-gray-600 border border-black/50"></div>
+            <img src={logo} alt="Logo Toga Pedia" className="w-full h-full object-contain" />
           </div>
-          <div className="text-[#357C23] ml-2 font-lexend text-2xl font-medium">
-            Toga Pedia
+          <div className="text-[#357C23] ml-2 font-lexend text-xl font-semibold">
+            TogaPed
           </div>
         </div>
 
         {/* Navigasi */}
-        <div className="hidden md:flex gap-8 text-lg font-medium font-lexend text-gray-500">
+        <div className="hidden md:flex gap-8 text-lg font-medium font-lexend text-gray-500 absolute left-1/2 -translate-x-1/2">
           {navLink.map((link) => (
             <Link
               key={link.path}
@@ -56,35 +55,61 @@ const Navbar = () => {
           ))}
         </div>
 
-        {/* Button Rekomendasi */}
-        <button
-          onClick={() => navigate("/rekomendasi")}
-          className={`hidden md:block text-xl font-lexend px-10 py-4 rounded-xl font-medium transition shadow-md ${
-            isActive("/rekomendasi")
-              ? "bg-[#2a5d1a] text-white ring-2 ring-[#357C23]"
-              : "bg-[#357C23] text-white hover:bg-[#2a5d1a] cursor-pointer"
-          }`}
-        >
-          Rekomendasi
-        </button>
+        {/* Tombol Chat + Rekomendasi (Desktop) */}
+        <div className="hidden md:flex items-center gap-3">
+          <button
+            onClick={() => setIsChatOpen(!isChatOpen)}
+            title="Asisten TogaPedia"
+            className={`text-xl font-lexend px-5 py-4 rounded-xl font-medium transition shadow-md border-2 ${
+              isChatOpen
+                ? "bg-[#e8f5e9] text-[#357C23] border-[#357C23]"
+                : "bg-white text-[#357C23] border-[#357C23] hover:bg-[#e8f5e9] cursor-pointer"
+            }`}
+          >
+            <img src={chatIcon} alt="" className="" />
+          </button>
+          <button
+            onClick={() => navigate("/rekomendasi")}
+            className={`text-xl font-lexend px-10 py-4 rounded-xl font-medium transition shadow-md ${
+              isActive("/rekomendasi")
+                ? "bg-[#2a5d1a] text-white ring-2 ring-[#357C23]"
+                : "bg-[#357C23] text-white hover:bg-[#2a5d1a] cursor-pointer"
+            }`}
+          >
+            Rekomendasi
+          </button>
+        </div>
 
-        {/* Hamburger Menu (Mobile) */}
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden flex flex-col gap-1.5 w-8 h-8 justify-center"
-          aria-label="Toggle menu"
-        >
-          <span
-            className={`block h-0.5 w-full bg-[#357C23] transition-transform ${isOpen ? "rotate-45 translate-y-2" : ""}`}
-          ></span>
-          <span
-            className={`block h-0.5 w-full bg-[#357C23] transition-opacity ${isOpen ? "opacity-0" : ""}`}
-          ></span>
-          <span
-            className={`block h-0.5 w-full bg-[#357C23] transition-transform ${isOpen ? "-rotate-45 -translate-y-2" : ""}`}
-          ></span>
-        </button>
+        {/* Tombol Chat + Hamburger (Mobile) */}
+        <div className="md:hidden flex items-center gap-3">
+          {/* Tombol Chatbot */}
+          <button
+            onClick={() => setIsChatOpen(!isChatOpen)}
+            title="Asisten TogaPedia"
+            className={`text-xl w-9 h-9 flex items-center justify-center rounded-lg border-1.5 transition ${
+              isChatOpen
+                ? "bg-[#e8f5e9] text-[#357C23] border-[#357C23]"
+                : "bg-white text-[#357C23] border-[#357C23] hover:bg-[#e8f5e9]"
+            }`}
+          >
+            <img src={chatIcon} alt="" className="" />
+          </button>
+
+          {/* Hamburger */}
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="flex flex-col gap-1.5 w-8 h-8 justify-center"
+            aria-label="Toggle menu"
+          >
+            <span className={`block h-0.5 w-full bg-[#357C23] transition-transform ${isOpen ? "rotate-45 translate-y-2" : ""}`}></span>
+            <span className={`block h-0.5 w-full bg-[#357C23] transition-opacity ${isOpen ? "opacity-0" : ""}`}></span>
+            <span className={`block h-0.5 w-full bg-[#357C23] transition-transform ${isOpen ? "-rotate-45 -translate-y-2" : ""}`}></span>
+          </button>
+        </div>
       </nav>
+
+      {/* Chatbot Panel */}
+      <Chatbot isOpen={isChatOpen} onToggle={() => setIsChatOpen(!isChatOpen)} />
 
       {/* Black Background When Sidebar Open */}
       {isOpen && (
@@ -94,12 +119,11 @@ const Navbar = () => {
         ></div>
       )}
 
-      {/* Siderbar Menu Mobile */}
+      {/* Sidebar Menu Mobile */}
       <div
         className={`fixed top-20 right-0 h-90 w-full bg-white shadow-lg z-30 transform transition-transform ${isOpen ? "translate-y-0" : "-translate-y-full"} md:hidden`}
       >
         <div className="flex flex-col p-6 gap-8">
-          {/* Menu Items */}
           <div className="flex flex-col gap-8 font-lexend text-lg font-medium">
             {navLink.map((link) => (
               <Link

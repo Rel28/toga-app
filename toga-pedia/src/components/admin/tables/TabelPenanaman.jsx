@@ -8,7 +8,7 @@ const TabelPenanaman = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editedItemId, setEditedItemId] = useState(null);
 
@@ -23,7 +23,10 @@ const TabelPenanaman = () => {
     setFormData({
       nama_tanaman: penanaman.nama_tanaman,
       metode: penanaman.metode || "",
-      langkah: (penanaman.langkah && penanaman.langkah.length > 0) ? penanaman.langkah : [""],
+      langkah:
+        penanaman.langkah && penanaman.langkah.length > 0
+          ? penanaman.langkah
+          : [""],
     });
     setIsModalOpen(true);
   };
@@ -73,14 +76,19 @@ const TabelPenanaman = () => {
         metode: formData.metode,
         langkah: formData.langkah.filter((l) => l.trim() !== ""),
       };
-      await axios.put(`http://127.0.0.1:5000/admin/penanaman/${editedItemId}`, dataToSend);
+      await axios.put(
+        `http://127.0.0.1:5000/admin/penanaman/${editedItemId}`,
+        dataToSend,
+      );
       alert("Data berhasil diupdate!");
 
       closeModal();
       fetchPenanaman();
     } catch (error) {
       console.error("Gagal menyimpan data:", error);
-      alert("Gagal menyimpan data. Pastikan tanaman ini belum memiliki data penanaman.");
+      alert(
+        "Gagal menyimpan data. Pastikan tanaman ini belum memiliki data penanaman.",
+      );
     }
   };
 
@@ -89,34 +97,34 @@ const TabelPenanaman = () => {
     fetchPenanaman();
   }, []);
 
-// Reset ke halaman 1 saat search berubah
-useEffect(() => {
-  setCurrentPage(1);
-}, [searchTerm]);
+  // Reset ke halaman 1 saat search berubah
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
 
-// Filter data berdasarkan search
-const filteredData = penanamanData.filter((penanaman) => {
-  const searchLower = searchTerm.toLowerCase();
-  return (
-    penanaman.nama_tanaman?.toLowerCase().includes(searchLower) ||
-    penanaman.metode?.toLowerCase().includes(searchLower)
-  );
-});
+  // Filter data berdasarkan search
+  const filteredData = penanamanData.filter((penanaman) => {
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      penanaman.nama_tanaman?.toLowerCase().includes(searchLower) ||
+      penanaman.metode?.toLowerCase().includes(searchLower)
+    );
+  });
 
-// Pagination logic
-const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-const indexOfLastItem = currentPage * itemsPerPage;
-const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+  // Pagination logic
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
-// Handler
-const handlePageChange = (pageNumber) => {
-  setCurrentPage(pageNumber);
-};
+  // Handler
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
-const handleSearch = (e) => {
-  setSearchTerm(e.target.value);
-};
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
 
   return (
     <div className="bg-white rounded-2xl border-2 border-gray-200 overflow-hidden w-full">
@@ -127,81 +135,92 @@ const handleSearch = (e) => {
         </h3>
       </div>
 
-    {/* Search Bar & Info */}
-    <div className="px-6 py-4 border-b-2 border-gray-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-      <div className="flex items-center gap-2 w-full md:w-auto">
-        <div className="relative flex-1 md:flex-initial">
-          <input
-            type="text"
-            placeholder="Cari nama tanaman atau metode..."
-            value={searchTerm}
-            onChange={handleSearch}
-            className="w-full md:w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg font-lexend text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-          />
-          <svg
-            className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+      {/* Search Bar & Info */}
+      <div className="px-6 py-4 border-b-2 border-gray-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="flex items-center gap-2 w-full md:w-auto">
+          <div className="relative flex-1 md:flex-initial">
+            <input
+              type="text"
+              placeholder="Cari nama tanaman atau metode..."
+              value={searchTerm}
+              onChange={handleSearch}
+              className="w-full md:w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg font-lexend text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
             />
-          </svg>
-          {searchTerm && (
-            <button
-              onClick={() => setSearchTerm("")}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            <svg
+              className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm("")}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          )}
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Info Display */}
+        <div className="font-lexend text-sm text-gray-600">
+          Menampilkan {indexOfFirstItem + 1}-
+          {Math.min(indexOfLastItem, filteredData.length)} dari{" "}
+          {filteredData.length} data
         </div>
       </div>
-
-      {/* Info Display */}
-      <div className="font-lexend text-sm text-gray-600">
-        Menampilkan {indexOfFirstItem + 1}-
-        {Math.min(indexOfLastItem, filteredData.length)} dari{" "}
-        {filteredData.length} data
-      </div>
-    </div>
 
       {/* Tabel Data */}
       <table className="w-full">
         <thead>
           <tr className="border-b-2 border-gray-200 bg-gray-200">
-            <th className="font-lexend text-sm font-normal text-[#2C2C2C] py-4 text-center">Nama Tanaman</th>
-            <th className="font-lexend text-sm font-normal text-[#2C2C2C] py-4 text-center">Metode Penanaman</th>
-            <th className="font-lexend text-sm font-normal text-[#2C2C2C] py-4 text-center">Langkah-langkah</th>
-            <th className="font-lexend text-sm font-normal text-[#2C2C2C] py-4 text-center">Aksi</th>
+            <th className="font-lexend text-sm font-normal text-[#2C2C2C] py-4 text-center">
+              Nama Tanaman
+            </th>
+            <th className="font-lexend text-sm font-normal text-[#2C2C2C] py-4 text-center">
+              Metode Penanaman
+            </th>
+            <th className="font-lexend text-sm font-normal text-[#2C2C2C] py-4 text-center">
+              Langkah-langkah
+            </th>
+            <th className="font-lexend text-sm font-normal text-[#2C2C2C] py-4 text-center">
+              Aksi
+            </th>
           </tr>
         </thead>
-       <tbody>
+        <tbody>
           {currentItems.length > 0 ? (
             currentItems.map((penanaman) => {
               // 🆕 Cek apakah data sudah diisi atau masih kosong
-              const isDataKosong = !penanaman.metode || !penanaman.langkah || penanaman.langkah.length === 0;
-              
+              const isDataKosong =
+                !penanaman.metode ||
+                !penanaman.langkah ||
+                penanaman.langkah.length === 0;
+
               return (
-                <tr 
-                  key={penanaman.id} 
-                  className={`border-b-2 border-gray-200 last:border-b-0 ${isDataKosong ? 'bg-yellow-50' : ''}`}
+                <tr
+                  key={penanaman.id}
+                  className={`border-b-2 border-gray-200 last:border-b-0 ${isDataKosong ? "bg-yellow-50" : ""}`}
                 >
                   <td className="font-lexend text-xs text-[#ACACAC] py-4 text-center px-2">
                     {penanaman.nama_tanaman}
@@ -210,26 +229,31 @@ const handleSearch = (e) => {
                     {penanaman.metode ? (
                       <span className="text-[#ACACAC]">{penanaman.metode}</span>
                     ) : (
-                      <span className="text-orange-500 italic">⚠️ Belum diisi</span>
+                      <span className="text-orange-500 italic">
+                        ⚠️ Belum diisi
+                      </span>
                     )}
                   </td>
                   <td className="font-lexend text-xs py-4 text-center px-2">
-                    {Array.isArray(penanaman.langkah) && penanaman.langkah.length > 0 ? (
+                    {Array.isArray(penanaman.langkah) &&
+                    penanaman.langkah.length > 0 ? (
                       <ol className="list-decimal list-inside space-y-1 text-left text-[#ACACAC]">
                         {penanaman.langkah.map((langkah, idx) => (
                           <li key={idx}>{langkah}</li>
                         ))}
                       </ol>
                     ) : (
-                      <span className="text-orange-500 italic">⚠️ Belum diisi</span>
+                      <span className="text-orange-500 italic">
+                        ⚠️ Belum diisi
+                      </span>
                     )}
                   </td>
                   <td className="font-lexend text-xs py-4 text-center px-2">
                     <button
                       onClick={() => openEditModal(penanaman)}
-                      className={`px-4 py-2 ${isDataKosong ? 'bg-orange-500 hover:bg-orange-600' : 'bg-blue-500 hover:bg-blue-600'} text-white rounded-lg transition-colors duration-300 font-medium cursor-pointer`}
+                      className={`px-4 py-2 ${isDataKosong ? "bg-orange-500 hover:bg-orange-600" : "bg-blue-500 hover:bg-blue-600"} text-white rounded-lg transition-colors duration-300 font-medium cursor-pointer`}
                     >
-                      {isDataKosong ? 'Isi' : 'Edit '}
+                      {isDataKosong ? "Isi" : "Edit "}
                     </button>
                   </td>
                 </tr>
@@ -237,7 +261,10 @@ const handleSearch = (e) => {
             })
           ) : (
             <tr>
-              <td colSpan="4" className="font-lexend text-sm text-gray-500 py-8 text-center">
+              <td
+                colSpan="4"
+                className="font-lexend text-sm text-gray-500 py-8 text-center"
+              >
                 {searchTerm
                   ? "Tidak ada data yang sesuai dengan pencarian"
                   : "Belum ada data. Data otomatis dibuat saat menambah tanaman baru."}
@@ -247,7 +274,7 @@ const handleSearch = (e) => {
         </tbody>
       </table>
 
-       {/* Pagination */}
+      {/* Pagination */}
       {totalPages > 1 && (
         <div className="px-6 py-4 border-t-2 border-gray-200">
           <Pagination
@@ -266,9 +293,22 @@ const handleSearch = (e) => {
               <h3 className="font-lexend text-xl font-semibold text-[#2C2C2C]">
                 Edit Cara Penanaman
               </h3>
-              <button onClick={closeModal} className="text-gray-400 hover:text-gray-600">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              <button
+                onClick={closeModal}
+                className="text-gray-400 hover:text-gray-600 cursor-pointer"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
@@ -276,8 +316,10 @@ const handleSearch = (e) => {
             <form onSubmit={handleSubmit} className="px-6 py-4">
               {/* Nama Tanaman (Dropdown saat tambah, Read-only saat edit) */}
               <div className="mb-4">
-                <label className="block font-lexend text-sm font-medium text-gray-700 mb-2">Nama Tanaman <span className="text-red-500">*</span></label>
-                  <input
+                <label className="block font-lexend text-sm font-medium text-gray-700 mb-2">
+                  Nama Tanaman <span className="text-red-500">*</span>
+                </label>
+                <input
                   type="text"
                   name="nama_tanaman"
                   value={formData.nama_tanaman}
@@ -288,27 +330,71 @@ const handleSearch = (e) => {
 
               {/* Metode Penanaman */}
               <div className="mb-4">
-                <label className="block font-lexend text-sm font-medium text-gray-700 mb-2">Metode Penanaman <span className="text-red-500">*</span></label>
-                <input type="text" name="metode" value={formData.metode} onChange={handleInputChange} required placeholder="Contoh: Stek, Biji, Cangkok" className="w-full px-3 py-2 border border-gray-300 rounded-lg font-lexend text-sm focus:ring-2 focus:ring-blue-500" />
+                <label className="block font-lexend text-sm font-medium text-gray-700 mb-2">
+                  Metode Penanaman <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="metode"
+                  value={formData.metode}
+                  onChange={handleInputChange}
+                  required
+                  placeholder="Contoh: Stek, Biji, Cangkok"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg font-lexend text-sm focus:ring-2 focus:ring-blue-500"
+                />
               </div>
 
               {/* Langkah-langkah */}
               <div className="mb-4">
-                <label className="block font-lexend text-sm font-medium text-gray-700 mb-2">Langkah-langkah <span className="text-red-500">*</span></label>
+                <label className="block font-lexend text-sm font-medium text-gray-700 mb-2">
+                  Langkah-langkah <span className="text-red-500">*</span>
+                </label>
                 {formData.langkah.map((langkah, index) => (
                   <div key={index} className="flex gap-2 mb-2">
-                    <input type="text" value={langkah} onChange={(e) => handleLangkahChange(index, e.target.value)} placeholder={`Langkah ${index + 1}`} required className="w-full px-3 py-2 border border-gray-300 rounded-lg font-lexend text-sm focus:ring-2 focus:ring-blue-500" />
+                    <input
+                      type="text"
+                      value={langkah}
+                      onChange={(e) =>
+                        handleLangkahChange(index, e.target.value)
+                      }
+                      placeholder={`Langkah ${index + 1}`}
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg font-lexend text-sm focus:ring-2 focus:ring-blue-500"
+                    />
                     {formData.langkah.length > 1 && (
-                      <button type="button" onClick={() => removeLangkahField(index)} className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">✕</button>
+                      <button
+                        type="button"
+                        onClick={() => removeLangkahField(index)}
+                        className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 cursor-pointer"
+                      >
+                        ✕
+                      </button>
                     )}
                   </div>
                 ))}
-                <button type="button" onClick={addLangkahField} className="mt-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm font-lexend">+ Tambah Langkah</button>
+                <button
+                  type="button"
+                  onClick={addLangkahField}
+                  className="mt-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm font-lexend cursor-pointer"
+                >
+                  + Tambah Langkah
+                </button>
               </div>
 
               <div className="flex justify-end gap-2 mt-6">
-                <button type="button" onClick={closeModal} className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">Batal</button>
-                <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Simpan Data</button>
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 cursor-pointer"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 cursor-pointer"
+                >
+                  Simpan Data
+                </button>
               </div>
             </form>
           </div>

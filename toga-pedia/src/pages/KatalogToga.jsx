@@ -176,7 +176,7 @@ const sortOptions = [
 
           <button
             onClick={() => setSortOpen((prev) => !prev)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg border-2 text-sm font-lexend font-medium transition ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg border-2 text-sm font-lexend font-medium transition cursor-pointer ${
               sortBy !== "default"
                 ? "border-[#357C23] bg-[#357C23] text-white"
                 : "border-gray-300 bg-white text-gray-700 hover:border-[#357C23]"
@@ -247,7 +247,7 @@ const sortOptions = [
                     setSortBy("default");
                     setSortOpen(false);
                   }}
-                  className={`w-full text-left px-4 py-2.5 text-sm font-lexend transition ${
+                  className={`w-full text-left px-4 py-2.5 text-sm font-lexend transition cursor-pointer ${
                     sortBy === "default"
                       ? "bg-green-50 text-[#357C23] font-semibold"
                       : "text-gray-600 hover:bg-gray-50"
@@ -271,7 +271,7 @@ const sortOptions = [
                         setSortBy(opt.value);
                         setSortOpen(false);
                       }}
-                      className={`w-full text-left px-4 py-2 text-sm font-lexend flex items-center justify-between transition ${
+                      className={`w-full text-left px-4 py-2 text-sm font-lexend flex items-center justify-between transition cursor-pointer ${
                         sortBy === opt.value
                           ? "bg-green-50 text-[#357C23] font-semibold"
                           : "text-gray-600 hover:bg-gray-50"
@@ -312,7 +312,7 @@ const sortOptions = [
                         setSortBy(opt.value);
                         setSortOpen(false);
                       }}
-                      className={`w-full text-left px-4 py-2 text-sm font-lexend flex items-center justify-between transition ${
+                      className={`w-full text-left px-4 py-2 text-sm font-lexend flex items-center justify-between transition cursor-pointer ${
                         sortBy === opt.value
                           ? "bg-green-50 text-[#357C23] font-semibold"
                           : "text-gray-600 hover:bg-gray-50"

@@ -313,7 +313,7 @@ const TabelPengolahan = () => {
               </h3>
               <button
                 onClick={closeModal}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-gray-600 cursor-pointer"
               >
                 <svg
                   className="w-6 h-6"
@@ -399,7 +399,7 @@ const TabelPengolahan = () => {
                       <button
                         type="button"
                         onClick={() => removeLangkahField(index)}
-                        className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                        className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 cursor-pointer"
                       >
                         ✕
                       </button>
@@ -409,7 +409,7 @@ const TabelPengolahan = () => {
                 <button
                   type="button"
                   onClick={addLangkahField}
-                  className="mt-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm font-lexend"
+                  className="mt-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm font-lexend cursor-pointer"
                 >
                   + Tambah Langkah
                 </button>
@@ -435,13 +435,13 @@ const TabelPengolahan = () => {
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 cursor-pointer"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 cursor-pointer"
                 >
                   Simpan Data
                 </button>

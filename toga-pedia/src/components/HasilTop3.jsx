@@ -42,11 +42,11 @@ const HasilTop3 = ({ result, loading, error }) => {
 
   // Results
   return (
-    <div className="relative border-2 border-[#557C2F] rounded-2xl pt-12 pb-8 px-6 bg-white shadow-sm">
+    <div className="relative border-2 border-[#557C2F] rounded-2xl pt-12 pb-8 px-6 bg-white shadow-sm mt-8">
       {/* Badge */}
       <div className="absolute -top-5 left-1/2 -translate-x-1/2">
         <span className="bg-[#357C23] text-white px-6 py-2.5 rounded-lg font-semibold shadow-md whitespace-nowrap text-sm font-lexend">
-          3 Tanaman Terbaik untuk Anda
+          Tanaman Terbaik untuk Anda
         </span>
       </div>
 
@@ -70,32 +70,37 @@ const HasilTop3 = ({ result, loading, error }) => {
               className="shrink-0 w-16 h-16 object-cover rounded-lg"
             />
 
-            {/* Info */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-0.5">
-                <p className="font-lexend font-semibold text-gray-800 truncate text-sm md:text-base">
-                  {toga.nama}
+            {/* Info + Button wrapper */}
+            <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center gap-2">
+              {/* Info */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <p className="font-lexend font-semibold text-gray-800 truncate text-sm md:text-base">
+                    {toga.nama}
+                  </p>
+                  {/* Skor */}
+                  <span className="shrink-0 text-[10px] md:text-xs font-bold text-[#357C23] bg-green-100 px-2 py-0.5 rounded-md">
+                    {toga.skor}%
+                  </span>
+                </div>
+                <p className="text-xs text-[#357C23] font-medium">
+                  {toga.kategori || "Tanaman Obat"}
                 </p>
-                {/* Skor */}
-                <span className="shrink-0 text-xs font-bold text-[#357C23] bg-green-100 px-2 py-0.5 rounded-md">
-                  {toga.skor}%
-                </span>
+                <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">
+                  {toga.deskripsi}
+                </p>
               </div>
-              <p className="text-xs text-[#357C23] font-medium">
-                {toga.kategori || "Tanaman Obat"}
-              </p>
-              <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">
-                {toga.deskripsi}
-              </p>
-            </div>
 
-            {/* Detail button */}
-            <button
-              onClick={() => navigate(`/katalog-toga/${toga.id}`, { state: { result } })}
-              className="shrink-0 bg-[#357C23] text-white px-3 py-1.5 rounded-full text-xs font-semibold hover:bg-[#2a5d1a] transition cursor-pointer"
-            >
-              Detail
-            </button>
+              {/* Detail button */}
+              <button
+                onClick={() =>
+                  navigate(`/katalog-toga/${toga.id}`, { state: { result } })
+                }
+                className="shrink-0 bg-[#357C23] text-white px-3 py-1.5 rounded-full text-xs font-semibold hover:bg-[#2a5d1a] transition cursor-pointer w-fit"
+              >
+                Detail
+              </button>
+            </div>
           </div>
         ))}
       </div>
@@ -104,7 +109,7 @@ const HasilTop3 = ({ result, loading, error }) => {
       <div className="mt-6">
         <button
           onClick={() => navigate("/hasil-spk", { state: { result } })}
-          className="w-full bg-[#357C23] text-white py-3 rounded-xl font-semibold font-lexend hover:bg-[#2a5d1a] transition flex items-center justify-center gap-2 cursor-pointer"
+          className="w-full bg-[#357C23] text-white py-3 rounded-xl font-semibold font-lexend hover:bg-[#2a5d1a] transition flex items-center justify-center gap-2 cursor-pointer text-sm md:text-base"
         >
           Lihat Semua Hasil Rekomendasi
           <svg

@@ -98,7 +98,7 @@ def update_tanaman(id):
             val = data.get('kegunaan')
             tanaman.detail_kegunaan = ';'.join(val) if isinstance(val, list) else val
         if 'harga_bibit' in data:
-            tanaman.harga_asli = data.get('harga_bibit')
+            tanaman.harga_bibit = data.get('harga_bibit')
         if 'harga_panen' in data:
             tanaman.harga_hasil_panen = data.get('harga_panen')
         if 'masa_panen' in data:

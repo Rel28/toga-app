@@ -51,7 +51,7 @@ const Tentang = () => {
         {...fadeUp}
       >
         <h1 className="text-[28px] md:text-[52px] font-lexend font-bold text-gray-800 leading-tight max-w-3xl">
-          Tentang <span className="text-[#357C23]">Toga Pedia</span>
+          Tentang <span className="text-[#357C23]">TogaPed</span>
         </h1>
         <p className="text-gray-500 text-base md:text-lg leading-relaxed max-w-2xl">
           Sistem Pendukung Keputusan pemilihan Tanaman Obat Keluarga (TOGA) 
@@ -76,7 +76,7 @@ const Tentang = () => {
           {/* Kiri: Teks */}
           <div className="space-y-4">
             <h2 className="text-[22px] md:text-[34px] font-lexend font-bold text-gray-800 leading-tight">
-              Mengapa <span className="text-[#357C23]">Toga Pedia</span> Dibuat?
+              Mengapa <span className="text-[#357C23]">TogaPed</span> Dibuat?
             </h2>
             <p className="text-gray-600 text-sm md:text-base leading-relaxed">
               Banyak masyarakat ingin menanam TOGA di rumah, namun bingung memilih tanaman 
@@ -109,7 +109,7 @@ const Tentang = () => {
       <motion.section className="py-16 md:py-20" {...fadeUp}>
         <div className="max-w-screen mx-auto px-6 md:px-16">
           <div className="text-center mb-10 md:mb-14">
-            <h2 className="text-[22px] md:text-[34px] font-lexend font-bold text-gray-800">
+            <h2 className="text-[22px] md:text-[34px] font-lexend font-medium text-gray-800">
               Kriteria <span className="text-[#357C23]">Penilaian</span>
             </h2>
             <p className="text-gray-500 text-sm md:text-base mt-2">
@@ -132,7 +132,7 @@ const Tentang = () => {
                       {k.tipe}
                     </span>
                   </div>
-                  <p className="text-gray-500 text-xs leading-relaxed">{k.desc}</p>
+                  <p className="text-gray-500 text-xs md:text-sm leading-relaxed">{k.desc}</p>
                 </div>
               </div>
             ))}
@@ -145,7 +145,7 @@ const Tentang = () => {
       <motion.section className="py-16 md:py-20" {...fadeUp}>
         <div className="max-w-screen mx-auto px-6 md:px-16">
           <div className="text-center mb-10 md:mb-14">
-            <h2 className="text-[22px] md:text-[34px] font-lexend font-bold text-gray-800">
+            <h2 className="text-[22px] md:text-[34px] font-lexend font-medium text-gray-800">
               Cara <span className="text-[#357C23]">Kerja</span>
             </h2>
             <p className="text-gray-500 text-sm md:text-base mt-2">

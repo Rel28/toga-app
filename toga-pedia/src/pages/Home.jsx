@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Navbar from "../components/Navbar";
-import togaImage from "../assets/images/toga-image.jpg";
+import togaImage from "../assets/images/toga-image.svg";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import Footer from "../components/Footer";
@@ -18,6 +18,24 @@ const Home = () => {
       .catch((err) => console.error(err));
   }, []);
 
+  const langkah = [
+    {
+      no: "01",
+      judul: "Isi Kuisioner",
+      desc: "Jawab 6 pertanyaan singkat tentang kondisi lahan, waktu, dan tujuan menanam Anda.",
+    },
+    {
+      no: "02",
+      judul: "Sistem Menghitung",
+      desc: "Bobot kriteria dikalkulasi otomatis menggunakan metode SAW dan TOPSIS Hybrid.",
+    },
+    {
+      no: "03",
+      judul: "Lihat Rekomendasi",
+      desc: "Dapatkan tanaman terbaik yang paling cocok beserta detail lengkapnya.",
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-[#FDFDFD]">
       {/* Navbar */}
@@ -25,7 +43,7 @@ const Home = () => {
 
       {/* Section Utama */}
       <motion.section
-        className="min-h-screen max-w-screen mx-auto px-6 md:px-16 py-25 md:py-20 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center"
+        className="min-h-screen max-w-screen mx-auto px-6 md:px-16 py-30 md:py-20 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center"
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
@@ -40,7 +58,7 @@ const Home = () => {
             </span>
           </h1>
 
-          <p className="text-gray-600 text-[16px] md:text-[18px] leading-relaxed max-w-200">
+          <p className="text-gray-400 text-[16px] md:text-[18px] leading-relaxed max-w-200">
             Sistem ini membantu Anda memilih TOGA terbaik di Indonesia.
             Rekomendasi didasarkan pada 6 kriteria seperti masa panen, jumlah
             kegunaan tanaman, harga jual, dll.
@@ -58,50 +76,49 @@ const Home = () => {
         <img
           src={togaImage}
           alt="Gambar Toga"
-          className="w-full max-w-160 h-auto border border-gray-200 rounded-2xl flex mx-auto shadow-sm relative overflow-hidden order-first md:order-0"
+          className="w-xl ml-auto order-first md:order-last"
         />
       </motion.section>
 
-      {/* Section Rekomendasi */}
-      <div className="min-h-screen bg-[#F5F5F5] md:py-15">
-        {/* Section Rekomendasi */}
+      {/* Section Kerja Rekomendasi */}
+      <div className=" bg-[#F5F5F5]">
         <motion.section
-          className=" bg-[#F5F5F5] max-w-screen mx-auto px-6 md:px-16 py-25 md:py-20 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center"
+          className=" py-16 md:py-20"
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           viewport={{ once: false, amount: 0.2 }}
         >
-          {/* Gambar Kiri */}
-          <img
-            src={togaImage}
-            alt="Rekomendasi TOGA"
-            className="w-full max-w-160 h-auto border border-gray-200 rounded-2xl flex mx-auto shadow-sm relative overflow-hidden order-first md:order-0"
-          />
-
-          {/* Teks Kanan */}
-          <div className="space-y-4 md:space-y-6">
-            <h2 className="text-[20px] md:text-[32px] font-lexend font-bold text-gray-800 leading-tight w-full">
-              Bagaimana Sistem Memilih Tanaman untuk Anda
-            </h2>
-            <div className="space-y-2">
-              <p className="text-gray-600 text-[16px] md:text-[18px] leading-relaxed max-w-200">
-                Sistem ini bertindak layaknya asisten kebun cerdas Anda.
-                Alih-alih menebak, kami mencocokkan kondisi Anda dengan banyak jenis tanaman herbal melalui:
+          <div className="max-w-screen mx-auto px-6 md:px-16">
+            <div className="text-center mb-10 md:mb-14">
+              <h2 className="text-[22px] md:text-[34px] font-lexend font-medium text-gray-800">
+                Cara <span className="text-[#357C23]">Kerja</span>
+              </h2>
+              <p className="text-gray-500 text-sm md:text-base mt-2">
+                Tiga langkah sederhana untuk mendapatkan rekomendasi terbaik.
               </p>
-              <ul className="list-disc list-outside text-gray-600 text-[16px] md:text-[18px] leading-relaxed max-w-200 pl-5">
-                <li>
-                  <strong>Kenali Kebutuhan:</strong> Anda tentukan prioritas
-                  utama Anda (misal: hanya punya pot kecil, ingin cepat panen,
-                  atau mencari tanaman bernilai jual tinggi).
-                </li>
-                <li>
-                  <strong>Analisis Pintar:</strong> Sistem secara otomatis akan
-                  membandingkan semua tanaman berdasarkan 6 faktor kunci
-                  (kemudahan tanam, waktu panen, lahan, pengolahan, khasiat, dan
-                  nilai ekonomi).
-                </li>
-              </ul>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {langkah.map((l, i) => (
+                <div
+                  key={i}
+                  className="relative bg-white rounded-2xl p-6 border border-gray-200 shadow-sm hover:border-[#357C23] hover:shadow-md transition"
+                >
+                  <span className="font-lexend font-bold text-5xl text-green-100 absolute top-4 right-5 select-none">
+                    {l.no}
+                  </span>
+                  <div className="w-10 h-10 bg-[#357C23] rounded-xl flex items-center justify-center text-white font-bold text-lg mb-4 relative z-10">
+                    {i + 1}
+                  </div>
+                  <h3 className="font-lexend font-semibold text-gray-800 text-base mb-2">
+                    {l.judul}
+                  </h3>
+                  <p className="text-gray-400 text-sm leading-relaxed">
+                    {l.desc}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
         </motion.section>
@@ -145,7 +162,7 @@ const Home = () => {
                   <p className="text-gray-500 text-[13px] md:text-[15px] font-lexend">
                     {toga.kategori}
                   </p>
-                  <p className="text-gray-500 text-[13px] md:text-[14px] mt-2 line-clamp-2">
+                  <p className="text-gray-400 text-[13px] md:text-[14px] mt-2 line-clamp-2">
                     {toga.deskripsi}
                   </p>
                 </div>
@@ -187,7 +204,7 @@ const Home = () => {
       </motion.section>
 
       {/* Section Referensi */}
-      <div className="min-h-screen bg-[#F5F5F5] ">
+      <div className="bg-[#F5F5F5] ">
         {/* Section Referensi */}
         <motion.section
           className="py-16 md:py-20"

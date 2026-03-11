@@ -1,7 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import logo from '../assets/images/toga-logo-white.svg';
 
 const Footer = () => {
+
+  const [pesan, setPesan] = useState('');
+  const [status, setStatus] = useState('');
+
+  const kirimPesan = async () => {
+    if (!pesan.trim()) return;
+    try {
+      const res = await fetch('http://localhost:5000/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pesan }),
+      });
+      if (res.ok) {
+        setPesan('');
+        setStatus('Pesan berhasil dikirim!');
+        alert('Terima kasih atas masukan Anda!');
+        setTimeout(() => setStatus(''), 3000);
+      }
+    } catch {
+      setStatus('Gagal mengirim pesan.');
+    }
+  };
+
   return (
     <footer className="bg-[#357C23] text-white">
       
@@ -13,10 +37,9 @@ const Footer = () => {
           {/* Logo */}
           <div className="flex items-center gap-1">
             <div className="relative w-12 h-12">
-              <div className="absolute top-0 left-0 w-8 h-8 rounded-full bg-white/30 border border-white/50"></div>
-              <div className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-white/60 border border-white/50"></div>
+              <img src={logo} alt="Logo Toga Pedia" className="w-full h-full object-contain" />
             </div>
-            <span className="ml-2 font-lexend text-xl font-semibold text-white">Toga Pedia</span>
+            <span className="ml-2 font-lexend text-xl font-semibold text-white">TogaPed</span>
           </div>
 
           {/* Nama & Role */}
@@ -32,7 +55,7 @@ const Footer = () => {
               href="mailto:verel@example.com"
               className="text-white text-sm hover:text-white/80 transition"
             >
-              verel@example.com
+              vereladitya07@gmail.com
             </a>
           </div>
         </div>
@@ -43,7 +66,7 @@ const Footer = () => {
             Tentang Proyek Ini
           </h3>
           <p className="text-white/80 text-sm md:text-base leading-relaxed">
-            Toga Pedia adalah sistem pendukung keputusan berbasis web yang membantu masyarakat 
+            TogaPed adalah sistem pendukung keputusan berbasis web yang membantu masyarakat 
             memilih Tanaman Obat Keluarga (TOGA) yang paling sesuai dengan kondisi dan kebutuhan mereka, 
             menggunakan metode SAW dan TOPSIS.
           </p>
@@ -70,6 +93,23 @@ const Footer = () => {
               </svg>
             </a>
           </div>
+
+          {/* Pesan Text Box */}
+          <div className="mt-4">
+            <p className="text-white text-xs md:text-sm mb-1 font-lexend">Tuliskan pesan anda untuk sistem ini:</p>
+            <textarea
+              value={pesan}
+              onChange={(e) => setPesan(e.target.value)}
+              placeholder="Tulis pesan Anda di sini..."
+              className="w-full h-24 p-3 rounded-lg bg-white/10 text-white text-sm placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#357C23] transition"
+            />
+            <button
+              onClick={kirimPesan}
+              className="mt-2 bg-white text-[#357C23] px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-200 transition cursor-pointer"
+            >
+              Kirim Pesan
+            </button>
+          </div>
         </div>
       </div>
 
@@ -89,7 +129,7 @@ const Footer = () => {
 
         {/* Copyright */}
         <p className="text-white/50 text-xs">
-          © {new Date().getFullYear()} Toga Pedia · Tugas Akhir Verel Aditya
+          © {new Date().getFullYear()} TogaPed · Tugas Akhir Verel Aditya
         </p>
       </div>
 

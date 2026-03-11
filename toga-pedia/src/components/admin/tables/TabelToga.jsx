@@ -295,12 +295,9 @@ const TabelToga = () => {
         <div className="flex gap-2">
           <button
             onClick={openModal}
-            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors duration-300 cursor-pointer"
+            className="px-4 py-2 bg-[#357C23] text-white rounded hover:bg-[#2a5d1a] transition-colors duration-300 cursor-pointer"
           >
             <span className="font-semibold">+</span> Tambah Data
-          </button>
-          <button className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors duration-300 cursor-pointer">
-            Hapus Semua
           </button>
         </div>
       </div>
@@ -358,7 +355,7 @@ const TabelToga = () => {
             onClick={() => setViewMode("informasi")}
             className={`px-4 py-2 text-sm font-lexend rounded-md transition-all cursor-pointer ${
               viewMode === "informasi"
-                ? "bg-white text-green-600 shadow-sm font-semibold"
+                ? "bg-white text-[#357C23] shadow-sm font-semibold"
                 : "text-gray-500 hover:text-gray-700"
             }`}
           >
@@ -368,7 +365,7 @@ const TabelToga = () => {
             onClick={() => setViewMode("kriteria")}
             className={`px-4 py-2 text-sm font-lexend rounded-md transition-all cursor-pointer ${
               viewMode === "kriteria"
-                ? "bg-white text-green-600 shadow-sm font-semibold"
+                ? "bg-white text-[#357C23] shadow-sm font-semibold"
                 : "text-gray-500 hover:text-gray-700"
             }`}
           >
@@ -455,10 +452,10 @@ const TabelToga = () => {
                 key={toga.id}
                 className="border-b-2 border-gray-200 last:border-b-0"
               >
-                <td className="font-lexend text-xs text-[#ACACAC] py-4 text-center px-2">
+                <td className="font-lexend text-xs text-gray-800 py-4 text-center px-2">
                   {toga.nama}
                 </td>
-                <td className="font-lexend text-xs text-[#ACACAC] py-4 text-center px-2">
+                <td className="font-lexend text-xs text-gray-800 py-4 text-center px-2">
                   {toga.kategori}
                 </td>
                 {/* ISI MODE INFORMASI */}
@@ -581,7 +578,7 @@ const TabelToga = () => {
               </h3>
               <button
                 onClick={closeModal}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-gray-600 cursor-pointer"
               >
                 <svg
                   className="w-6 h-6"
@@ -673,7 +670,7 @@ const TabelToga = () => {
                         <button
                           type="button"
                           onClick={() => removeKegunaanField(index)}
-                          className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                          className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 cursor-pointer"
                         >
                           ✕
                         </button>
@@ -683,7 +680,7 @@ const TabelToga = () => {
                   <button
                     type="button"
                     onClick={addKegunaanField}
-                    className="mt-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm font-lexend"
+                    className="mt-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm font-lexend cursor-pointer"
                   >
                     + Tambah Kegunaan
                   </button>
@@ -877,15 +874,15 @@ const TabelToga = () => {
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-300"
+                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-300 cursor-pointer"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-300"
+                  className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-300 cursor-pointer"
                 >
-                  {isEditMode ? "Update Data" : "Simpan Data"}
+                  Simpan Data
                 </button>
               </div>
             </form>

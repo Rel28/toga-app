@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from routes.crud_kategori import kategori_bp, init_kategori_routes
@@ -9,6 +9,8 @@ from routes.crud_pengolahan import pengolahan_bp, init_pengolahan_routes
 from routes.crud_kriteria import kriteria_bp, init_kriteria_routes
 import pandas as pd
 import numpy as np
+import google.generativeai as genai
+from werkzeug.security import check_password_hash
 
 app = Flask(__name__)
 CORS(app)
@@ -16,7 +18,15 @@ CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:theepic28@localhost/toga_db_2'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# Inisialisasi SQLAlchemy
 db = SQLAlchemy(app)
+
+# API Key Chatbot Gemini (GEMINI-3-FLASH-PREVIEW)
+genai.configure(api_key="AIzaSyByTegs5cFY_BrKfPA3voPIZJJWFdorHH8")
+
+# SECRET_KEY untuk session login admin
+app.secret_key = 'ce5d52ee31095bd051dc6f82d253478935bba70e91acd0b5'
+
 
 # ==============================================================================
 # DEFINISI MODEL (MENCERMINKAN STRUKTUR DATABASE BARU)
@@ -151,6 +161,28 @@ class SubCriteria(db.Model):
             'nilai': self.nilai,
             'kode': self.criteria.kode if self.criteria else None,
         }
+        
+class User(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), unique=True)
+    password_hash = db.Column(db.String(255), nullable=False)
+
+class Feedbacks(db.Model):
+    __tablename__ = 'feedbacks'
+    id = db.Column(db.Integer, primary_key=True)
+    nama = db.Column(db.String(100), default='Pengguna') 
+    pesan = db.Column(db.Text, nullable=False)
+    tanggal = db.Column(db.DateTime, default=db.func.current_timestamp())
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'nama': self.nama,
+            'pesan': self.pesan,
+            'tanggal': str(self.tanggal),
+        }
+
 
 # ==============================================================================
 # ALGORITMA HYBRID: SAW + TOPSIS
@@ -275,6 +307,69 @@ def get_detail_tanaman(id):
     
     return jsonify(response)
 
+@app.route('/api/chat', methods=['POST'])
+def chat_bot():
+    try:
+        input_user = request.json
+        pesan = input_user.get('message', '').lower()
+
+        # 1. Ambil semua data tanaman dari database
+        tanaman_list = Alternative.query.all()
+        
+        # 2. Bangun konteks dari dataset
+        konteks = ""
+        for t in tanaman_list:
+            planting = "; ".join([f"{p.metode}: {p.langkah_langkah}" for p in t.planting_guides]) or "Tidak ada data"
+            processing = "; ".join([f"{p.nama_olahan}: {p.langkah_langkah}" for p in t.processing_guides]) or "Tidak ada data"
+            konteks += f"""
+---
+Tanaman: {t.nama_tanaman}
+Kategori: {t.category.nama_kategori if t.category else '-'}
+Deskripsi: {t.deskripsi_pendek}
+Kegunaan/Khasiat: {t.detail_kegunaan}
+Cara Penanaman: {planting}
+Cara Pengolahan: {processing}
+Harga Bibit: {t.harga_bibit} | Harga Panen: {t.harga_hasil_panen} | Masa Panen: {t.masa_panen}
+"""
+
+        # 3. Prompt dengan instruksi ketat berbasis dataset
+        system_prompt = f"""Kamu adalah 'Asisten TogaPedia'.
+Kamu HANYA boleh menjawab berdasarkan data tanaman berikut ini. Jangan gunakan pengetahuan di luar data ini.
+Jika pertanyaan tidak berkaitan dengan tanaman dalam data ini, jawab: "Maaf, saya hanya bisa menjawab seputar tanaman yang ada di TogaPedia."
+Jawab dalam bahasa Indonesia yang santai dan ringkas.
+
+=== DATA TANAMAN TOGAPEDIA ===
+{konteks}
+=== AKHIR DATA ===
+"""
+        
+        full_prompt = f"{system_prompt}\n\nPertanyaan user: {pesan}\nAsisten TogaPedia:"
+        
+        model = genai.GenerativeModel('gemini-3-flash-preview')
+        response = model.generate_content(full_prompt)
+        
+        return jsonify({'status': 'success', 'reply': response.text})
+
+    except Exception as e:
+        print(f"CHAT ERROR: {e}")
+        return jsonify({'status': 'error', 'reply': 'Maaf, sistem asisten sedang sibuk atau error.'}), 500
+    
+@app.route('/api/feedback', methods=['POST'])
+def kirim_feedback():
+    data = request.get_json()
+    pesan = data.get('pesan', '').strip()
+    if not pesan:
+        return jsonify({'error': 'Pesan tidak boleh kosong'}), 400
+    fb = Feedbacks(nama=data.get('nama', 'Pengunjung'), pesan=pesan)
+    db.session.add(fb)
+    db.session.commit()
+    return jsonify({'message': 'Feedback berhasil dikirim'}), 201
+
+@app.route('/api/feedback', methods=['GET'])
+def get_feedback():
+    feedbacks = Feedbacks.query.order_by(Feedbacks.id.desc()).all()
+    return jsonify([f.to_dict() for f in feedbacks])
+
 @app.route('/api/rekomendasi', methods=['POST'])
 def get_rekomendasi():
     input_user = request.json
@@ -349,6 +444,24 @@ def get_rekomendasi():
         })
     else:
         return jsonify({'status': 'empty', 'data': []})
+
+@app.route('/admin/login', methods=['POST'])
+def admin_login():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+    
+    admin = User.query.filter_by(username=username).first()
+    if admin and check_password_hash(admin.password_hash, password): 
+        return jsonify({'status': 'success', 'message': 'Login berhasil'})
+    else:
+        return jsonify({'status': 'error', 'message': 'Login gagal'})
+
+@app.route('/admin/logout', methods=['POST'])
+def admin_logout():
+    return jsonify({'status': 'success', 'message': 'Logout berhasil'})
+    
+    
 
 init_kategori_routes(db, Category)
 init_tanaman_routes(db, Category, Alternative)
