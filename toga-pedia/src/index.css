@@ -4,4 +4,5 @@
 @theme {
   --font-poppins: 'Poppins', sans-serif;
   --font-lexend: 'Lexend Deca', sans-serif;
+  --breakpoint-qhd: 2048px;
 }

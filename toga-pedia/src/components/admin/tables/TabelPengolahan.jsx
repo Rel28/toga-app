@@ -72,7 +72,7 @@ const TabelPengolahan = () => {
   const fetchPengolahan = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/admin/pengolahan",
+        "http://localhost:5000/admin/pengolahan"
       );
       setPengolahanData(response.data);
     } catch (error) {
@@ -86,6 +86,7 @@ const TabelPengolahan = () => {
       const dataToSend = {
         nama_tanaman: formData.nama_tanaman,
         olahan: formData.olahan,
+        kegunaan_olahan: formData.kegunaan_olahan,
         langkah: formData.langkah.filter((l) => l.trim() !== ""),
         dosis: formData.dosis,
       };
@@ -362,7 +363,7 @@ const TabelPengolahan = () => {
                 />
               </div>
 
-              {/* Nama Olahan */}
+              {/* Kegunaan Olahan */}
               <div className="mb-4">
                 <label className="block font-lexend text-sm font-medium text-gray-700 mb-2">
                   Kegunaan Olahan<span className="text-red-500">*</span>

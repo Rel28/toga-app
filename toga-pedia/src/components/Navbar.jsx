@@ -121,7 +121,7 @@ const Navbar = () => {
 
       {/* Sidebar Menu Mobile */}
       <div
-        className={`fixed top-20 right-0 h-90 w-full bg-white shadow-lg z-30 transform transition-transform ${isOpen ? "translate-y-0" : "-translate-y-full"} md:hidden`}
+        className={`fixed top-20 right-0 h-90 w-full bg-white shadow-lg z-30 transform transition-transform duration-500 ease-in-out ${isOpen ? "translate-y-0" : "-translate-y-full"} md:hidden`}
       >
         <div className="flex flex-col p-6 gap-8">
           <div className="flex flex-col gap-8 font-lexend text-lg font-medium">

@@ -49,7 +49,7 @@ const TabelKriteria = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`http://127.0.0.1:5000/admin/kriteria/${editedItemId}`, formData,
+            await axios.put(`http://localhost:5000/admin/kriteria/${editedItemId}`, formData,
             );
             alert("Data berhasil diperbarui!");
             closeModal();
@@ -64,7 +64,7 @@ const TabelKriteria = () => {
   // == API CALLS ==
   const fetchKriteria = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:5000/admin/kriteria");
+      const response = await axios.get("http://localhost:5000/admin/kriteria");
       setKriteriaData(response.data);
     } catch (error) {
       console.error("Error fetching kriteria data:", error);

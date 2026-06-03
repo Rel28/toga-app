@@ -32,7 +32,7 @@ const KatalogToga = () => {
   const fetchToga = async () => {
     try {
       // Panggil API Backend
-      const response = await axios.get("http://127.0.0.1:5000/api/tanaman");
+      const response = await axios.get("http://localhost:5000/api/tanaman");
       setTogaData(response.data); // Simpan data ke state
       setLoading(false);
     } catch (error) {
@@ -71,7 +71,8 @@ const sortedToga = [...filteredToga].sort((a, b) => {
     case 'za': return b.nama.localeCompare(a.nama);
     case 'panen_asc': return (a.scores?.panen ?? 99) - (b.scores?.panen ?? 99);
     case 'panen_desc': return (b.scores?.panen ?? 0) - (a.scores?.panen ?? 0);
-    case 'mudah': return (a.scores?.kesulitan ?? 99) - (b.scores?.kesulitan ?? 99);
+    case 'mudah_penanaman': return (a.scores?.kesulitan ?? 99) - (b.scores?.kesulitan ?? 99);
+    case 'mudah_pengolahan': return (a.scores?.pengolahan ?? 99) - (b.scores?.pengolahan ?? 99);
     case 'lahan_asc': return (a.scores?.lahan ?? 99) - (b.scores?.lahan ?? 99);
     case 'manfaat': return (b.scores?.manfaat ?? 0) - (a.scores?.manfaat ?? 0);
     default: return 0;
@@ -84,7 +85,8 @@ const sortOptions = [
   { value: 'za',          label: 'Z → A',                group: 'Nama' },
   { value: 'panen_asc',   label: 'Masa Panen Tercepat',  group: 'Kriteria' },
   { value: 'panen_desc',  label: 'Masa Panen Terlama',   group: 'Kriteria' },
-  { value: 'mudah',       label: 'Termudah Dirawat',     group: 'Kriteria' },
+  { value: 'mudah_penanaman',       label: 'Termudah Dirawat',     group: 'Kriteria' },
+  { value: 'mudah_pengolahan', label: 'Termudah Dikolah',     group: 'Kriteria' },
   { value: 'lahan_asc',   label: 'Lahan Terkecil',       group: 'Kriteria' },
   { value: 'manfaat',     label: 'Manfaat Terbanyak',    group: 'Kriteria' },
 ];

@@ -61,7 +61,7 @@ const TabelPenanaman = () => {
   // === API CALLS ===
   const fetchPenanaman = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:5000/admin/penanaman");
+      const response = await axios.get("http://localhost:5000/admin/penanaman");
       setPenanamanData(response.data);
     } catch (error) {
       console.error("Error fetching penanaman data:", error);
@@ -77,7 +77,7 @@ const TabelPenanaman = () => {
         langkah: formData.langkah.filter((l) => l.trim() !== ""),
       };
       await axios.put(
-        `http://127.0.0.1:5000/admin/penanaman/${editedItemId}`,
+        `http://localhost:5000/admin/penanaman/${editedItemId}`,
         dataToSend,
       );
       alert("Data berhasil diupdate!");

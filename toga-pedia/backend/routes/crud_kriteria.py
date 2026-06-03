@@ -18,7 +18,7 @@ def init_kriteria_routes(database, criteria_model):
 
 @kriteria_bp.route('', methods=['GET'])
 def get_all_kriteria():
-    kriteria_list = Criteria.query.all()
+    kriteria_list = Criteria.query.order_by(Criteria.id).all()
     return jsonify([kriteria.to_dict() for kriteria in kriteria_list])
 
 @kriteria_bp.route('/<int:id>', methods=['PUT'])

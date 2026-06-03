@@ -10,7 +10,7 @@ const TabelSubKriteria = () => {
   const fetchSubKriteria = async () => {
     try {
       const response = await axios.get(
-        "http://127.0.0.1:5000/admin/subkriteria/all",
+        "http://localhost:5000/admin/subkriteria/all",
       );
       setSubkriteriaData(response.data);
     } catch (error) {

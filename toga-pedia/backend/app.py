@@ -1,3 +1,4 @@
+import os
 from flask import Flask, jsonify, request, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -11,11 +12,17 @@ import pandas as pd
 import numpy as np
 import google.generativeai as genai
 from werkzeug.security import check_password_hash
+from dotenv import load_dotenv
+
+# Muat variabel dari file .env
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:theepic28@localhost/toga_db_2'
+# Memanggil Secret Key dan Database URL dari .env
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Inisialisasi SQLAlchemy
@@ -188,14 +195,6 @@ class Feedbacks(db.Model):
 # ALGORITMA HYBRID: SAW + TOPSIS
 # ==============================================================================
 def hitung_spk(df, weights):
-    """
-    Metode Hybrid:
-    1. Normalisasi Matris menggunakan SAW (Min/Val atau Val/Max sesuai Cost/Benefit)
-    2. Hitung Matriks Terbobot (y_ij = w_i * r_ij)
-    3. Cari Solusi Ideal Positif & Negatif (A+ & A-)
-    4. Hitung Jarak (D+ & D-)
-    5. Hitung Nilai Preferensi (V_i)
-    """
 
     # 1. NORMALISASI MATRIKS (METODE SAW)
     
@@ -225,6 +224,12 @@ def hitung_spk(df, weights):
     max_c6 = df['c6_range_harga'].max()
     R['c6'] = df['c6_range_harga'] / max_c6
     
+    print("df['c3_kesulitan']:")
+    print(df['c3_kesulitan'])
+    
+    print("R['c3']:")
+    print(R['c3'])
+    
     # 2. HITUNG MATRIKS TERBOBOT
 
     # Normalisasi bobot agar jumlahnya 1
@@ -239,6 +244,9 @@ def hitung_spk(df, weights):
     Y['c5'] = R['c5'] * W[4]
     Y['c6'] = R['c6'] * W[5]
     
+    print("Y['c3']:")
+    print(Y['c3'])
+    
     # 3. CARI SOLUSI IDEAL POSITIF & NEGATIF
     A_plus = Y.max()
     A_minus = Y.min()
@@ -250,6 +258,9 @@ def hitung_spk(df, weights):
     # 5. HITUNG NILAI PREFERENSI
     V = D_minus / (D_plus + D_minus + 1e-9)
 
+    print("V:")
+    print(V)
+    
     return V
 
 # ==============================================================================
@@ -375,31 +386,37 @@ def get_rekomendasi():
     input_user = request.json
     
     # 1. Tangkap Input User
-    # Filter Konteks (Penyakit/Kegunaan) - Opsional
     keyword_penyakit = input_user.get('penyakit', '').lower().strip()
     
     # Bobot Kriteria (Default jika user tidak geser slider)
-    weights = [
-        float(input_user.get('w_panen', 0.15)),      # C1
-        float(input_user.get('w_manfaat', 0.20)),    # C2
-        float(input_user.get('w_kesulitan', 0.15)),  # C3
-        float(input_user.get('w_lahan', 0.20)),      # C4
-        float(input_user.get('w_pengolahan', 0.10)), # C5
-        float(input_user.get('w_harga', 0.20))       # C6
-    ]
+    criteria_list = Criteria.query.order_by(Criteria.kode).all()
+    weights_db = [c.bobot_default for c in criteria_list if c.bobot_default is not None]
+
+    # Fallback ke default jika data bobot DB belum lengkap
+    if len(weights_db) != 6:
+        weights = [
+            float(input_user.get('w_panen', 0.20)),      # C1
+            float(input_user.get('w_manfaat', 0.35)),    # C2
+            float(input_user.get('w_kesulitan', 0.06)),  # C3
+            float(input_user.get('w_lahan', 0.06)),      # C4
+            float(input_user.get('w_pengolahan', 0.30)), # C5
+            float(input_user.get('w_harga', 0.03))       # C6
+        ]
+    else:
+        weights = weights_db
     # 2. Ambil Data dari Database ke Pandas
     query = """SELECT a.*, c.nama_kategori 
     FROM alternatives a
     LEFT JOIN categories c ON a.category_id = c.id"""
     df = pd.read_sql(query, db.engine)
     
-    # 3. LOGIKA HYBRID: Content-Based Filtering Dulu
+    # 3. Mencari Tanaman Berdasarkan Keyword Penyakit 
     if keyword_penyakit:
         # Cari tanaman yang 'detail_kegunaan' mengandung kata kunci penyakit
         mask = df['detail_kegunaan'].str.lower().str.contains(keyword_penyakit)
         df_filtered = df[mask].copy()
         
-        # Fallback: Jika tidak ditemukan, kembalikan semua data tapi beri notif
+        # Fallback: Jika tidak ditemukan, kembalikan semua data
         if df_filtered.empty:
             match_status = "Tidak ditemukan spesifik, menampilkan rekomendasi umum."
             df_filtered = df.copy()

@@ -78,10 +78,6 @@ const HasilTop3 = ({ result, loading, error }) => {
                   <p className="font-lexend font-semibold text-gray-800 truncate text-sm md:text-base">
                     {toga.nama}
                   </p>
-                  {/* Skor */}
-                  <span className="shrink-0 text-[10px] md:text-xs font-bold text-[#357C23] bg-green-100 px-2 py-0.5 rounded-md">
-                    {toga.skor}%
-                  </span>
                 </div>
                 <p className="text-xs text-[#357C23] font-medium">
                   {toga.kategori || "Tanaman Obat"}
@@ -96,13 +92,35 @@ const HasilTop3 = ({ result, loading, error }) => {
                 onClick={() =>
                   navigate(`/katalog-toga/${toga.id}`, { state: { result } })
                 }
-                className="shrink-0 bg-[#357C23] text-white px-3 py-1.5 rounded-full text-xs font-semibold hover:bg-[#2a5d1a] transition cursor-pointer w-fit"
+                className="shrink-0 bg-[#357C23] text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-[#2a5d1a] transition cursor-pointer w-fit"
               >
                 Detail
               </button>
             </div>
           </div>
         ))}
+        {/* Catatan Rekomendasi */}
+        <div className="flex items-start gap-3 bg-blue-50 border border-blue-100 rounded-xl p-4">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-5 h-5 text-blue-400 shrink-0 mt-0.5"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+            />
+          </svg>
+          <div>
+            <p className="text-xs font-normal text-blue-500 mb-0.5">
+              Sistem menyeimbangkan seluruh jawaban Anda untuk merekomendasikan tanaman yang <span className="font-semibold">paling optimal dan mendekati</span> kondisi Anda.
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Navigate to full results */}

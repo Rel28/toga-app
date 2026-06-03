@@ -70,7 +70,7 @@ const TabelKategori = () => {
   // === API CALLS ===
   const fetchKategori = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:5000/admin/kategori");
+      const response = await axios.get("http://localhost:5000/admin/kategori");
       setKategoriData(response.data);
     } catch (error) {
       console.error("Error fetching kategori data:", error);
@@ -82,12 +82,12 @@ const TabelKategori = () => {
     try {
       if (isEditMode) {
         await axios.put(
-          `http://127.0.0.1:5000/admin/kategori/${editedItemId}`,
+          `http://localhost:5000/admin/kategori/${editedItemId}`,
           formData,
         );
         alert("Data berhasil diupdate!");
       } else {
-        await axios.post("http://127.0.0.1:5000/admin/kategori", formData);
+        await axios.post("http://localhost:5000/admin/kategori", formData);
         alert("Data berhasil disimpan!");
       }
         closeModal();
@@ -101,7 +101,7 @@ const TabelKategori = () => {
   const handleDeleteConfirm = async () => {
     try {
       await axios.delete(
-        `http://127.0.0.1:5000/admin/kategori/${deleteItemId.id}`,
+        `http://localhost:5000/admin/kategori/${deleteItemId.id}`,
       );
       alert("Data berhasil dihapus!");
       closeDeleteModal();

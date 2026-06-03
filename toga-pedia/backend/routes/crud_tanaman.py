@@ -39,10 +39,10 @@ def create_tanaman():
         nama_tanaman=data.get('nama'),
         deskripsi_pendek=data.get('deskripsi'),
         detail_kegunaan=';'.join(data.get('kegunaan')) if isinstance(data.get('kegunaan'), list) else data.get('kegunaan'),
-        harga_bibit=data.get('harga'),
+        harga_bibit=data.get('harga_bibit'),
         harga_hasil_panen=data.get('harga_panen'),
         masa_panen=data.get('masa_panen'),
-        image=data.get('image'),
+        image_url=data.get('image'),
         c1_panen=data.get('panen'),
         c2_manfaat=data.get('manfaat'),
         c3_kesulitan=int(data.get('kesulitan')) if data.get('kesulitan') else None,
@@ -104,7 +104,7 @@ def update_tanaman(id):
         if 'masa_panen' in data:
             tanaman.masa_panen = data.get('masa_panen')
         if 'image' in data:
-            tanaman.image = data.get('image')
+            tanaman.image_url = data.get('image')
         if 'panen' in data:
             tanaman.c1_panen = int(data.get('panen')) if data.get('panen') else None
         if 'manfaat' in data:

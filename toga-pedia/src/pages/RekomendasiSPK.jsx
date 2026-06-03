@@ -30,7 +30,7 @@ const RekomendasiSPK = () => {
     setError(null);
     
     try {
-      const response = await axios.post('http://127.0.0.1:5000/api/rekomendasi', payload);
+      const response = await axios.post('http://localhost:5000/api/rekomendasi', payload);
       setResult(response.data);
     } catch (error) {
       console.error("Error SPK:", error);
@@ -43,43 +43,43 @@ const RekomendasiSPK = () => {
   // Fungsi Konversi Jawaban ke Bobot
   const generatePayload = () => {
     // 1. Default Bobot
-    let w_manfaat = 0.20;
+    let w_manfaat = 0.35;
 
     // 2. Logika C4: Lahan (Pertanyaan 1)
-    let w_lahan = 0.20; // Default
+    let w_lahan = 0.06; // Default
     const ansLahan = answers[1];
-    if (ansLahan?.includes("Sangat Sempit")) w_lahan = 0.40;
-    else if (ansLahan?.includes("Sempit")) w_lahan = 0.30;
-    else if (ansLahan?.includes("Sedang")) w_lahan = 0.20;
-    else if (ansLahan?.includes("Luas")) w_lahan = 0.05;
+    if (ansLahan?.includes("Sangat Sempit")) w_lahan = 0.25;
+    else if (ansLahan?.includes("Sempit")) w_lahan = 0.15;
+    else if (ansLahan?.includes("Sedang")) w_lahan = 0.06;
+    else if (ansLahan?.includes("Luas")) w_lahan = 0.03;
 
     //  3. Logika C3: Waktu/Kesulitan (Pertanyaan 2)
-    let w_kesulitan = 0.15; // Default
+    let w_kesulitan = 0.06; // Default
     const ansWaktu = answers[2];
-    if (ansWaktu?.includes("Sedikit")) w_kesulitan = 0.35;
-    else if (ansWaktu?.includes("Cukup")) w_kesulitan = 0.20;
-    else if (ansWaktu?.includes("Banyak")) w_kesulitan = 0.05;
+    if (ansWaktu?.includes("Sedikit")) w_kesulitan = 0.20;
+    else if (ansWaktu?.includes("Cukup")) w_kesulitan = 0.06;
+    else if (ansWaktu?.includes("Banyak")) w_kesulitan = 0.03;
 
     // 4. Logika C1: Panen (Pertanyaan 3)
-    let w_panen = 0.15; // Default
+    let w_panen = 0.20; // Default
     const ansPanen = answers[3];
     if (ansPanen?.includes("Cepat")) w_panen = 0.30;
-    else if (ansPanen?.includes("Sedang")) w_panen = 0.15;
-    else if (ansPanen?.includes("Tidak Terburu-buru")) w_panen = 0.05;
+    else if (ansPanen?.includes("Sedang")) w_panen = 0.20;
+    else if (ansPanen?.includes("Tidak Terburu-buru")) w_panen = 0.10;
 
     // 5. Logika C2: Pengolahan (Pertanyaan 4)
-    let w_pengolahan = 0.10; // Default
+    let w_pengolahan = 0.30; // Default
     const ansOlah = answers[4];
-    if (ansOlah?.includes("Praktis")) w_pengolahan = 0.30;
-    else if (ansOlah?.includes("Ribet")) w_pengolahan = 0.15;
-    else if (ansOlah?.includes("Eksperimen")) w_pengolahan = 0.05;
+    if (ansOlah?.includes("Praktis")) w_pengolahan = 0.40;
+    else if (ansOlah?.includes("Ribet")) w_pengolahan = 0.25;
+    else if (ansOlah?.includes("Eksperimen")) w_pengolahan = 0.15;
 
     // 6. Logika C6: Harga Jual (Pertanyaan 5)
-    let w_harga = 0.20;
+    let w_harga = 0.03;
     const ansHarga = answers[5];
-    if (ansHarga?.includes("Tidak")) w_harga = 0.05;
-    else if (ansHarga?.includes("Mungkin")) w_harga = 0.15;
-    else if (ansHarga?.includes("Ya")) w_harga = 0.30;
+    if (ansHarga?.includes("Tidak")) w_harga = 0.03;
+    else if (ansHarga?.includes("Mungkin")) w_harga = 0.10;
+    else if (ansHarga?.includes("Ya")) w_harga = 0.20;
 
     // 7. Ambil Keluhan Kesehatan (Pertanyaan 6)
     const keywordPenyakit = answers[6] || "";

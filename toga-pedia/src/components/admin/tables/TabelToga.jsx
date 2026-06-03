@@ -140,7 +140,7 @@ const TabelToga = () => {
   // === API CALLS ===
   const fetchToga = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:5000/api/tanaman");
+      const response = await axios.get("http://localhost:5000/api/tanaman");
       setTogaData(response.data);
       setLoading(false);
     } catch (error) {
@@ -151,7 +151,7 @@ const TabelToga = () => {
 
   const fetchKategori = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:5000/admin/kategori");
+      const response = await axios.get("http://localhost:5000/admin/kategori");
       setKategoriList(response.data);
     } catch (error) {
       console.error("Gagal ambil kategori:", error);
@@ -161,7 +161,7 @@ const TabelToga = () => {
   const fetchSubKriteria = async () => {
     try {
       const response = await axios.get(
-        "http://127.0.0.1:5000/admin/subkriteria",
+        "http://localhost:5000/admin/subkriteria",
       );
       setSubKriteriaData(response.data);
     } catch (error) {
@@ -179,16 +179,16 @@ const TabelToga = () => {
     try {
       if (isEditMode) {
         await axios.put(
-          `http://127.0.0.1:5000/admin/tanaman/${editedItemId}`,
+          `http://localhost:5000/admin/tanaman/${editedItemId}`,
           dataToSend,
         );
         alert("Data berhasil diupdate!");
       } else {
-        await axios.post("http://127.0.0.1:5000/admin/tanaman", dataToSend);
+        await axios.post("http://localhost:5000/admin/tanaman", dataToSend);
 
         try {
           // Buat data penanaman kosong untuk tanaman baru
-          await axios.post("http://127.0.0.1:5000/admin/penanaman", {
+          await axios.post("http://localhost:5000/admin/penanaman", {
             nama_tanaman: formData.nama,
             metode: "",
             langkah: [],
@@ -202,7 +202,7 @@ const TabelToga = () => {
 
         try {
           // Buat data pengolahan kosong untuk tanaman baru
-          await axios.post("http://127.0.0.1:5000/admin/pengolahan", {
+          await axios.post("http://localhost:5000/admin/pengolahan", {
             nama_tanaman: formData.nama,
             olahan: "",
             langkah: [],
@@ -227,7 +227,7 @@ const TabelToga = () => {
   const handleDeleteConfirm = async () => {
     try {
       await axios.delete(
-        `http://127.0.0.1:5000/admin/tanaman/${deleteItemId.id}`,
+        `http://localhost:5000/admin/tanaman/${deleteItemId.id}`,
       );
       alert(`Data "${deleteItemId.nama}" berhasil dihapus!`);
       closeDeleteModal();

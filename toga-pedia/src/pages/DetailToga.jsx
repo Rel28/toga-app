@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate, useLocation} from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 
@@ -13,7 +13,7 @@ const DetailToga = () => {
   const fetchDetail = async () => {
     try {
       const response = await axios.get(
-        `http://127.0.0.1:5000/api/tanaman/${id}`,
+        `http://localhost:5000/api/tanaman/${id}`,
       );
       setData(response.data);
       setLoading(false);
@@ -43,11 +43,12 @@ const DetailToga = () => {
     );
   }
 
-  const formatRupiah = (number) => {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-    }).format(number);
+  const handleBack = () => {
+    if (state?.from === "rekomendasi" || state?.result) {
+      navigate("/rekomendasi", { state: { result: state?.result } });
+    } else {
+      navigate(-1);
+    }
   };
 
   return (
@@ -57,7 +58,7 @@ const DetailToga = () => {
       <section className="pt-32 pb-20 px-6 md:px-16">
         <div className="max-w-screen mx-auto">
           <button
-            onClick={() => navigate('/rekomendasi', { state: { result: state?.result } })}
+            onClick={handleBack}
             className="text-[#357C23] font-lexend font-medium mb-6 flex items-center gap-2 hover:underline cursor-pointer"
           >
             &#8592; Kembali
@@ -95,11 +96,11 @@ const DetailToga = () => {
               </div>
               {/* Kegunaan */}
               <div className="flex flex-row bg-[#F1F1F1] p-4 md:p-5 border-b border-gray-100">
-                <span className="font-medium font-lexend text-gray-800 w-48 shrink-0">
+                <span className="font-medium font-lexend text-gray-800 w-35 shrink-0">
                   {" "}
                   Kegunaan:
                 </span>
-                <ul className="list-decimal list-outside ml-5 space-y-2 text-gray-600 leading-relaxed text-sm">
+                <ul className="list-decimal list-outside md:ml-5 space-y-2 text-gray-600 leading-relaxed text-sm">
                   {data.kegunaan &&
                     data.kegunaan.map((use, i) => <li key={i}>{use}</li>)}
                 </ul>
@@ -122,7 +123,7 @@ const DetailToga = () => {
                   Rp{data.harga_panen}
                 </span>
               </div>
-    
+
               {/* Masa Panen */}
               <div className="flex flex-row bg-white p-4 md:p-5 border-b border-gray-100">
                 <span className="font-medium font-lexend text-gray-800 w-48 shrink-0">
@@ -152,8 +153,8 @@ const DetailToga = () => {
                     </div>
 
                     <div className="mt-6 space-y-4">
-                    {/* Kesulitan Penanaman */}
-                      <div className="bg-[#F1F1F1] p-4 rounded-lg">
+                      {/* Kesulitan Penanaman */}
+                      <div className="bg-[#F1F1F1] p-4 rounded-lg text-sm md:text-base">
                         <span className="font-medium text-gray-800 font-lexend w-52 shrink-0">
                           Kesulitan Penanaman:
                         </span>
@@ -163,17 +164,17 @@ const DetailToga = () => {
                       </div>
 
                       {/* Kebutuhan Lahan */}
-                      <div className="px-4 py-2">
+                      <div className="px-4 py-2 text-sm md:text-base">
                         <span className="font-medium text-gray-800 font-lexend w-52 shrink-0">
                           Kebutuhan Lahan:
                         </span>
                         <span className="text-gray-600 ml-2">
                           {data.labels?.lahan || "Tidak diketahui"}
                         </span>
-                      </div>    
-                        
+                      </div>
+
                       {/* Metode */}
-                      <div className="bg-[#F1F1F1] p-4 rounded-lg">
+                      <div className="bg-[#F1F1F1] p-4 rounded-lg text-sm md:text-base">
                         <span className="font-medium text-gray-800 font-lexend w-52 shrink-0">
                           Metode Penanaman:
                         </span>
@@ -183,7 +184,7 @@ const DetailToga = () => {
                       </div>
 
                       {/* Langkah-langkah */}
-                      <div className="px-4 py-2">
+                      <div className="px-4 py-2 text-sm md:text-base">
                         <h4 className="font-medium text-gray-800 font-lexend">
                           Langkah-langkah:
                         </h4>
@@ -220,7 +221,7 @@ const DetailToga = () => {
 
                     <div className="mt-6 space-y-4">
                       {/* Nama Olahan */}
-                      <div className="bg-[#F1F1F1] p-4 rounded-lg">
+                      <div className="bg-[#F1F1F1] p-4 rounded-lg text-sm md:text-base">
                         <span className="font-medium text-gray-800 font-lexend w-52 shrink-0">
                           Nama Olahan:
                         </span>
@@ -230,7 +231,7 @@ const DetailToga = () => {
                       </div>
 
                       {/* Kegunaan Olahan */}
-                      <div className="px-4 py-2">
+                      <div className="px-4 py-2 text-sm md:text-base">
                         <span className="font-medium text-gray-800 font-lexend w-52 shrink-0">
                           Kegunaan Olahan:
                         </span>
@@ -240,9 +241,9 @@ const DetailToga = () => {
                       </div>
 
                       {/* Kesulitan Pengolahan */}
-                      <div className="bg-[#F1F1F1] p-4 rounded-lg">
+                      <div className="bg-[#F1F1F1] p-4 rounded-lg text-sm md:text-base">
                         <span className="font-medium text-gray-800 font-lexend w-52 shrink-0">
-                         Kesulitan Pengolahan:
+                          Kesulitan Pengolahan:
                         </span>
                         <span className="text-gray-600 ml-2">
                           {data.labels?.pengolahan || "Tidak diketahui"}
@@ -250,7 +251,7 @@ const DetailToga = () => {
                       </div>
 
                       {/* Dosis */}
-                      <div className="px-4 py-2">
+                      <div className="px-4 py-2 text-sm md:text-base">
                         <span className="font-medium text-gray-800 font-lexend w-52 shrink-0">
                           Dosis Pemakaian:
                         </span>
@@ -260,7 +261,7 @@ const DetailToga = () => {
                       </div>
 
                       {/* Langkah-langkah */}
-                      <div className="bg-[#F1F1F1] p-4 rounded-lg">
+                      <div className="bg-[#F1F1F1] p-4 rounded-lg text-sm md:text-base">
                         <h4 className="font-medium text-gray-800 font-lexend">
                           Langkah-langkah:
                         </h4>
